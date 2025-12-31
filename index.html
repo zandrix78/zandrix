@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZANDRIX - Criação de Sites Profissionais</title>
+    <!-- Importando fonte moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #ff007f; /* Rosa vibrante solicitado */
+            --hover-pink: #d6006b;
+            --bg-white: #ffffff;
+            --text-dark: #333; /* Cor para textos de parágrafo para melhor legibilidade */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--primary-pink);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Container da Animação 3D (Fundo) */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1; /* Fica atrás do conteúdo */
+            opacity: 0.6;
+        }
+
+        /* Header / Navegação */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary-pink);
+            text-decoration: none;
+        }
+
+        /* Seção Hero (Principal) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            background: linear-gradient(45deg, var(--primary-pink), #ff66b2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        /* Botão WhatsApp */
+        .cta-button {
+            background-color: var(--primary-pink);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover {
+            background-color: var(--hover-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 0, 127, 0.6);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Seção de Serviços */
+        .services {
+            padding: 100px 5%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .services h2, .testimonials h2, .faq h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            text-transform: uppercase;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            border: 2px solid var(--primary-pink);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.3s;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .service-card:hover {
+            background: var(--primary-pink);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Seção de Depoimentos */
+        .testimonials {
+            padding: 100px 5%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .testimonial-card {
+            background: white;
+            border: 2px solid var(--primary-pink);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .testimonial-card p {
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: var(--text-dark);
+        }
+
+        .testimonial-card h4 {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--primary-pink);
+            margin-bottom: 5px;
+        }
+
+        .testimonial-card span {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: #555;
+        }
+
+        /* Seção de FAQ */
+        .faq {
+            padding: 100px 5%;
+            background: var(--bg-white);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .faq-item {
+            border: 2px solid var(--primary-pink);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .faq-item summary {
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+            position: relative;
+            padding-right: 50px;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item summary::after {
+            content: '+';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item[open] {
+            background-color: #fff8fb;
+        }
+
+        .faq-item[open] summary {
+            color: var(--hover-pink);
+        }
+
+        .faq-item[open] summary::after {
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .faq-item p {
+            padding: 0 20px 20px;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-dark);
+            font-weight: 400;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Animação de Scroll (Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsividade Mobile */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .brand {
+                font-size: 1.5rem;
+            }
+            .services h2, .testimonials h2, .faq h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container para o 3D -->
+    <div id="canvas-container"></div>
+
+    <header>
+        <a href="#" class="brand">ZANDRIX</a>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>TRANSFORME SUA IDEIA EM REALIDADE DIGITAL</h1>
+            <p>Sites profissionais, responsivos e otimizados para SEO. A qualidade que sua empresa merece por um preço acessível.</p>
+            
+            <a href="https://wa.me/5533998154570?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20or%C3%A7amento%20para%20um%20site." class="cta-button" target="_blank">
+                FAZER ORÇAMENTO NO WHATSAPP
+            </a>
+        </section>
+
+        <section class="services reveal">
+            <h2>Nossos Serviços</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Web Design</h3>
+                    <p>Layouts modernos, fundo branco clean e animações que prendem a atenção do cliente.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Mobile First</h3>
+                    <p>Seu site perfeito em qualquer tela: celulares, tablets e computadores.</p>
+                </div>
+                <div class="service-card">
+                    <h3>SEO Otimizado</h3>
+                    <p>Apareça no Google e conquiste mais clientes organicamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials reveal">
+            <h2>O que nossos clientes dizem</h2>
+            <div class="services-grid">
+                <div class="testimonial-card">
+                    <p>"A Zandrix superou nossas expectativas! Entregaram um site moderno, rápido e que realmente aparece no Google. O preço acessível foi a cereja do bolo."</p>
+                    <div>
+                        <h4>Mariana Silva</h4>
+                        <span>CEO da InovaTech</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Meu negócio decolou depois do site que a Zandrix criou. As vendas online aumentaram 40% no primeiro mês. Profissionalismo e agilidade incríveis."</p>
+                    <div>
+                        <h4>Carlos Andrade</h4>
+                        <span>Dono da Sabor Local</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Precisava de um portfólio online que fosse bonito e funcional no celular. A Zandrix entendeu exatamente o que eu queria e entregou um trabalho impecável."</p>
+                    <div>
+                        <h4>Juliana Costa</h4>
+                        <span>Fotógrafa Profissional</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq reveal">
+            <h2>Perguntas Frequentes</h2>
+            <div class="faq-container">
+                <details class="faq-item">
+                    <summary>Quanto tempo leva para criar um site?</summary>
+                    <p>O prazo varia com a complexidade. Sites institucionais simples podem ser entregues em 7 a 15 dias. Lojas virtuais ou projetos mais complexos podem levar um pouco mais. Sempre definimos um cronograma claro no início.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>O site vai funcionar bem no celular?</summary>
+                    <p>Com certeza! Todos os nossos sites são criados com a filosofia "Mobile First", garantindo uma experiência perfeita em celulares, tablets e desktops.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Vocês oferecem suporte após a entrega?</summary>
+                    <p>Sim! Oferecemos um período de suporte gratuito para ajustes e correções após a entrega. Também temos planos de manutenção mensal para garantir que seu site esteja sempre seguro e atualizado.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Como funciona o pagamento?</summary>
+                    <p>Trabalhamos com um sinal de 50% para iniciar o projeto e os 50% restantes na entrega, quando você estiver totalmente satisfeito com o resultado. Aceitamos PIX e cartão de crédito.</p>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2023 ZANDRIX - Soluções Digitais</p>
+    </footer>
+
+    <!-- Three.js para animação 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Configuração da Cena 3D
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Grupo principal
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // Objeto 1: Icosaedro Wireframe (Externo)
+        const geometry = new THREE.IcosahedronGeometry(10, 1);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xff007f, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        group.add(sphere);
+
+        // Objeto 2: Octaedro Sólido (Interno)
+        const innerGeometry = new THREE.OctahedronGeometry(5, 0);
+        const innerMaterial = new THREE.MeshBasicMaterial({
+            color: 0xff007f,
+            wireframe: false,
+            transparent: true,
+            opacity: 0.1
+        });
+        const innerShape = new THREE.Mesh(innerGeometry, innerMaterial);
+        group.add(innerShape);
+
+        camera.position.z = 30;
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 120;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            color: 0xff007f
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        group.add(particlesMesh);
+
+        // Interação com Mouse
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+
+            // Rotação suave baseada no mouse
+            group.rotation.y += 0.05 * (targetX - group.rotation.y);
+            group.rotation.x += 0.05 * (targetY - group.rotation.x);
+
+            // Rotação constante dos objetos
+            sphere.rotation.z += 0.002;
+            innerShape.rotation.x -= 0.01;
+            innerShape.rotation.y -= 0.01;
+            
+            particlesMesh.rotation.y = -mouseX * 0.0002;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Script de Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 150;
+
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>
