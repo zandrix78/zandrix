@@ -27,11 +27,15 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
         body {
             background-color: var(--black-bg);
             color: #fff;
             font-family: 'Roboto', sans-serif;
-            overflow-x: hidden;
         }
 
         /* Canvas para o fundo espacial */
@@ -251,6 +255,129 @@
             font-family: 'Orbitron';
         }
 
+        /* Storytelling Section */
+        .story-section {
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            text-shadow: var(--text-glow);
+        }
+        
+        .story-title span {
+            color: var(--primary-purple);
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--primary-purple);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            box-shadow: 0 0 15px var(--primary-purple);
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.5s;
+        }
+        
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: var(--black-bg);
+            border: 4px solid var(--primary-purple);
+            top: 20px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 10px var(--primary-purple);
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid white;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent rgba(255,255,255,0.05);
+        }
+
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid white;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent rgba(255,255,255,0.05) transparent transparent;
+        }
+
+        .right::after {
+            left: -10px;
+        }
+
+        .content {
+            padding: 20px 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            position: relative;
+            border-radius: 6px;
+            border: 1px solid rgba(176, 38, 255, 0.3);
+        }
+        
+        .content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .content p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
         /* Checklist Section */
         .checklist-section {
             padding: 5rem 2rem;
@@ -458,7 +585,8 @@
             background: rgba(20, 20, 20, 0.8);
             border: 1px solid var(--primary-purple);
             padding: 2rem;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
             border-radius: 10px;
             transition: 0.4s;
             position: relative;
@@ -722,10 +850,9 @@
             }
 
             .hero {
-                padding-top: 15vh; /* Menos espaço no topo */
-                height: auto;
-                min-height: 100vh;
-                padding-bottom: 3rem;
+                padding-top: 8rem; /* Espaço ajustado para mobile */
+                min-height: auto; /* Remove altura forçada */
+                padding-bottom: 2rem;
             }
 
             .hero h1 {
@@ -739,8 +866,42 @@
                 margin-bottom: 1.5rem; /* Reduzido o espaço abaixo do texto */
             }
 
+            /* Timeline Mobile */
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-item::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent rgba(255,255,255,0.05) transparent transparent;
+            }
+
+            .left::after, .right::after {
+                left: 21px;
+            }
+            
+            .right {
+                left: 0%;
+            }
+            
+            .story-title {
+                font-size: 2rem;
+            }
+
             .checklist-container {
                 flex-direction: column;
+            }
+
+            .checklist-section {
+                padding: 3rem 1rem;
             }
 
             .proof-item { flex-direction: column; text-align: center; }
@@ -772,6 +933,10 @@
             .pricing-container {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .pricing {
+                padding: 3rem 1rem;
             }
             
             .card {
@@ -847,6 +1012,37 @@
         <div class="stat-box">
             <span class="stat-number" data-target="5000">0</span>
             <span class="stat-label">Linhas de Código</span>
+        </div>
+    </section>
+
+    <!-- Seção Storytelling (A Jornada) -->
+    <section class="story-section">
+        <h2 class="story-title">A Jornada do <span>Sucesso Digital</span></h2>
+        <div class="timeline">
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>1. O Caos Invisível</h3>
+                    <p>No início, seu negócio é como uma estrela solitária na escuridão. Sem um site profissional, você é invisível. Clientes procuram, mas encontram apenas o vazio ou, pior, seus concorrentes.</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2. A Descoberta</h3>
+                    <p>Você percebe que o "boca a boca" não é mais suficiente. O mundo mudou. Para crescer, você precisa de uma base digital sólida, rápida e impressionante. Você precisa da Zandrix.</p>
+                </div>
+            </div>
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>3. A Construção da Nave</h3>
+                    <p>Nós entramos em ação. Não apenas escrevemos código; forjamos sua identidade digital. Cores neon, velocidade da luz e design que prende a atenção. Sua marca ganha vida.</p>
+                </div>
+            </div>
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>4. A Conquista do Espaço</h3>
+                    <p>Seu site é lançado. O tráfego aumenta. A confiança dispara. O que antes era silêncio agora é notificação de vendas. Você deixou de ser um espectador para se tornar o líder do seu setor.</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1101,6 +1297,9 @@
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.proof-item').forEach(el => {
+            observer.observe(el);
+        });
+        document.querySelectorAll('.timeline-item').forEach(el => {
             observer.observe(el);
         });
 
