@@ -1,87 +1,54 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zandrix | Soluções Digitais do Futuro</title>
+    <title>Zandrix | Futuro Digital</title>
     
-    <!-- Fontes Futuristas -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Configuração Tailwind -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        zandrix: {
-                            black: '#000000',
-                            purple: '#8A2BE2',
-                            light: '#E0B0FF',
-                            dark: '#1a052e'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        orbitron: ['Orbitron', 'sans-serif'],
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Estilos Customizados -->
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js for 3D Elements -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
+        :root {
+            --bg-color: #000000;
+            --primary-color: #8A2BE2; /* Roxo Tecnológico */
+            --text-main: #8A2BE2;
+            --text-sec: #e0ccff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(138, 43, 226, 0.3);
+            --glow: 0 0 20px rgba(138, 43, 226, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-sec);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-        }
-        
-        /* Scrollbar Futurista */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #000000; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #8A2BE2; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a64bf4; 
+            text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
         }
 
-        /* Efeitos de Glow e Vidro */
-        .glass-panel {
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(138, 43, 226, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .neon-text {
-            text-shadow: 0 0 10px rgba(138, 43, 226, 0.7), 0 0 20px rgba(138, 43, 226, 0.5);
-        }
-
-        .neon-border {
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
-        }
-        
-        .neon-button:hover {
-            box-shadow: 0 0 20px rgba(138, 43, 226, 0.8), 0 0 40px rgba(138, 43, 226, 0.4);
-        }
-
-        /* Canvas 3D no fundo */
+        /* --- 3D Background Canvas --- */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -89,477 +56,1336 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* --- Preloader --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        #preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--primary-color);
+            text-shadow: var(--glow);
+            margin-bottom: 20px;
+            animation: titleGlow 2s infinite alternate;
+        }
+
+
+
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-sec);
+            font-weight: bold;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-logo::before,
+        .nav-logo::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+        }
+
+        .nav-logo::before {
+            left: 2px;
+            text-shadow: -1px 0 #ff00c1;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        }
+
+        .nav-logo::after {
+            left: -2px;
+            text-shadow: -1px 0 #00fff9;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: color 0.3s;
+            opacity: 0.8;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
+            opacity: 1;
+        }
+
+        .btn-cta {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
+        }
+
+        .btn-cta:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--glow);
+        }
+
+        /* --- Sections General --- */
+        section {
+            padding: 100px 10%;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            background: linear-gradient(90deg, #fff, var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center; /* Adicionado para centralizar o texto */
+            opacity: 0; /* For animation */
+            transform: translateY(30px);
+            transition: all 1s ease;
+            text-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+            animation: titleGlow 3s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
+            100% { text-shadow: 0 0 25px rgba(138, 43, 226, 0.9), 0 0 5px #fff; }
+        }
+
+        .visible .section-title {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Hero Section (Page 1) --- */
+        #home {
+            height: 100vh;
+            align-items: center;
+            text-align: center;
+        }
+
+        #hero-logo-container {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 30px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #8A2BE2);
+            background: linear-gradient(90deg, #fff 20%, #8A2BE2 40%, #fff 60%, #8A2BE2 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5));
+            animation: shine 8s linear infinite, titleGlow 3s infinite alternate;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: -200% center;
+            }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .hero-subtitle .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2rem;
+            background: #ccc;
+            animation: blink 1s infinite;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--glow);
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- Cards Grid (Services/Solutions) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 15px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            /* For scroll animation */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--glow);
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: var(--text-sec);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        .visible .card,
+        .visible .stat-box,
+        .visible .ceo-image {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Pricing Table --- */
+        .pricing-card {
+            text-align: center;
+            border: 2px solid var(--glass-border);
+        }
+
+        .pricing-card.highlighted {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+            box-shadow: var(--glow);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+        }
+
+        .pricing-card .price {
+            font-size: 3.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            margin: 20px 0;
+            display: block;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: var(--text-sec);
+            opacity: 0.7;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-card ul li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .pricing-card ul li::before {
+            content: '\f00c'; /* check icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+        }
+
+        /* --- Mascot Section --- */
+        .mascot-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .mascot-image img {
+            max-width: 100%;
+            filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.5));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .mascot-text h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        /* --- CEO Section --- */
+        .ceo-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr; /* Text takes more space */
+            align-items: center;
+            gap: 50px;
+        }
+
+        .ceo-image {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .ceo-image img {
+            width: 100%;
+            border-radius: 15px;
+            filter: grayscale(50%) contrast(1.1);
+            border: 2px solid var(--glass-border);
+            transition: all 0.4s ease;
+        }
+
+        .ceo-image img:hover {
+            filter: grayscale(0%) contrast(1);
+            border-color: var(--primary-color);
+            box-shadow: var(--glow);
+        }
+
+        .ceo-text h4 {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            color: var(--text-sec);
+            opacity: 0.7;
+            text-transform: none;
+            letter-spacing: 1px;
+        }
+
+
+        /* --- Results (Numbers) --- */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .stat-box {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .stat-box h2 {
+            font-size: 4rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 20px var(--primary-color);
+        }
+
+        /* --- Forms --- */
+        form {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, textarea, select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            padding: 15px;
+            color: white;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: transparent;
+            padding: 40px 10%;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .footer-dots {
+            color: var(--primary-color);
+            font-size: 2rem;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            text-shadow: var(--glow);
+        }
+
+
+        .copyright {
+            margin-top: 30px;
+            color: #444;
+            font-size: 0.8rem;
+        }
+
+        /* --- Tools Carousel --- */
+        #tools {
+            padding: 100px 0;
+        }
+
+        .tools-carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+        }
+
+        .tools-track {
+            display: flex;
+            width: calc(250px * 18); /* 250px per item * 9 items * 2 for loop */
+            animation: scroll 40s linear infinite;
+        }
+
+        .tool-logo {
+            width: 250px;
+            text-align: center;
+            font-size: 4rem;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tool-logo:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+            text-shadow: var(--glow);
+        }
+
+        .tool-logo i {
+            margin-bottom: 10px;
+        }
+
+        @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(calc(-250px * 9)); /* Half the track width */
+            }
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(2px, 9999px, 5px, 0); }
+            20% { clip: rect(25px, 9999px, 30px, 0); }
+            40% { clip: rect(10px, 9999px, 15px, 0); }
+            60% { clip: rect(18px, 9999px, 22px, 0); }
+            80% { clip: rect(5px, 9999px, 12px, 0); }
+            100% { clip: rect(28px, 9999px, 32px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(20px, 9999px, 25px, 0); }
+            20% { clip: rect(5px, 9999px, 10px, 0); }
+            40% { clip: rect(28px, 9999px, 32px, 0); }
+            60% { clip: rect(12px, 9999px, 18px, 0); }
+            80% { clip: rect(22px, 9999px, 26px, 0); }
+            100% { clip: rect(2px, 9999px, 8px, 0); }
+        }
+
+        /* --- FAQ / AI Assistant --- */
+        .faq-accordion .faq-item {
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 25px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-sec);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .faq-question:hover {
+            background: var(--glass);
+            color: var(--primary-color);
+        }
+
+        .faq-question::after {
+            content: '\f067'; /* Font Awesome Plus Icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            transition: transform 0.4s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px; /* Adjust as needed */
+            transition: max-height 1s ease-in-out;
+        }
+
+        .faq-answer p {
+            padding: 0 20px 25px;
+            line-height: 1.7;
+            opacity: 0.8;
+        }
+
+        /* --- Floating WhatsApp Button --- */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            animation: pulse-whatsapp 2s infinite;
+        }
+
+        @keyframes pulse-whatsapp {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .nav-links { display: none; } /* Simplified for demo */
+            .hero-title { font-size: 2.5rem; }
+            .mascot-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .ceo-content {
+                grid-template-columns: 1fr;
+            }
+            .ceo-image {
+                order: -1; /* Image comes first on mobile */
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 80px 5%;
+            }
+            nav {
+                padding: 15px 20px;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
         }
     </style>
-
-    <!-- React & Libraries -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
-    <!-- Framer Motion (Versão UMD Global) -->
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        const { motion, AnimatePresence, useScroll, useTransform } = window.Motion;
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="preloader-logo">ZANDRIX</div>
+    </div>
 
-        // --- COMPONENTE: FUNDO 3D (THREE.JS) ---
-        const Background3D = () => {
-            const mountRef = useRef(null);
+    <audio id="ambient-sound" src="https://cdn.pixabay.com/download/audio/2022/10/23/audio_841a60f518.mp3" loop></audio>
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
 
-            useEffect(() => {
-                const scene = new THREE.Scene();
-                // Fog para profundidade
-                scene.fog = new THREE.FogExp2(0x000000, 0.02);
+    <!-- Menu Principal -->
+    <nav>
+        <a href="#home" class="nav-logo" data-text="ZANDRIX">ZANDRIX</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Sobre</a></li>
+            <li><a href="#mascot">Mascote</a></li>
+            <li><a href="#services">Serviços</a></li>
+            <li><a href="#pricing">Planos</a></li>
+            <li><a href="#solutions">Soluções</a></li>
+            <li><a href="#process">Processo</a></li>
+            <li><a href="#clients">Clientes</a></li>
+            <li><a href="#tech">Tecnologia</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contato</a></li>
+        </ul>
+        <a href="https://wa.me/5533998154570" class="btn-cta">WhatsApp</a>
+    </nav>
 
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-                
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                mountRef.current.appendChild(renderer.domElement);
+    <!-- PÁGINA 1: HOME -->
+    <section id="home">
+        <div id="hero-logo-container"></div> <!-- 3D Logo Mount Point -->
+        <h1 class="hero-title">Transformamos empresas em<br>presenças digitais profissionais.</h1>
+        <p class="hero-subtitle" id="typewriter"></p>
+        <div class="hero-buttons">
+            <a href="#quote" class="btn-primary">Criar meu site</a>
+            <a href="https://wa.me/5533998154570" class="btn-cta" style="color:white; border-color:white;">Falar no WhatsApp</a>
+        </div>
+    </section>
 
-                // Partículas (Estrelas/Dados)
-                const particlesGeometry = new THREE.BufferGeometry();
-                const particlesCount = 2000;
-                const posArray = new Float32Array(particlesCount * 3);
+    <!-- PÁGINA 2: SOBRE -->
+    <section id="about">
+        <h2 class="section-title">Sobre a Zandrix</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Missão</h3>
+                <p>Elevar o padrão da web brasileira através de design futurista e performance extrema.</p>
+            </div>
+            <div class="card">
+                <h3>Visão</h3>
+                <p>Ser a referência número 1 em desenvolvimento web high-end na América Latina.</p>
+            </div>
+            <div class="card">
+                <h3>Valores</h3>
+                <p>Inovação constante, transparência radical e obsessão pela qualidade.</p>
+            </div>
+        </div>
+    </section>
 
-                for(let i = 0; i < particlesCount * 3; i++) {
-                    posArray[i] = (Math.random() - 0.5) * 40; // Espalhar
-                }
+    <!-- PÁGINA NOVA: CEO -->
+    <section id="ceo">
+        <h2 class="section-title">Uma Mensagem do CEO</h2>
+        <div class="ceo-content">
+            <div class="ceo-text card" style="cursor: default;">
+                <h3>Richard M.</h3>
+                <h4>Fundador & CEO</h4>
+                <p>“Desde o início da minha jornada no marketing digital, minha obsessão sempre foi a mesma: quebrar o padrão. A Zandrix nasceu dessa visão. Não estamos aqui para criar apenas sites, mas para construir fortalezas digitais que impulsionam marcas para o futuro.”</p>
+                <p>“Acredito que a combinação de tecnologia de ponta e design arrojado é a chave para a autoridade no mercado. Conecte-se comigo e vamos juntos elevar o nível da sua presença online.”</p>
+                <a href="https://instagram.com/eu.richardmkt" target="_blank" class="btn-cta" style="margin-top: 20px; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fab fa-instagram"></i> @eu.richardmkt
+                </a>
+            </div>
+            <div class="ceo-image">
+                <img src="https://i.imgur.com/hQ3oFl8.png" alt="Richard, CEO da Zandrix">
+            </div>
+        </div>
+    </section>
 
-                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-                const particlesMaterial = new THREE.PointsMaterial({
-                    size: 0.02,
-                    color: 0x8A2BE2,
-                    transparent: true,
-                    opacity: 0.8,
-                });
-                const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-                scene.add(particlesMesh);
+    <!-- PÁGINA NOVA: MASCOTE -->
+    <section id="mascot">
+        <h2 class="section-title">Conheça o Zandy</h2>
+        <div class="mascot-content">
+            <div class="mascot-image">
+                <img src="https://i.imgur.com/YETeQ7m.png" alt="Zandy, o Mascote da Zandrix">
+            </div>
+            <div class="mascot-text card" style="cursor: default;">
+                <h3>Olá, eu sou o Zandy!</h3>
+                <p>Seu guia no universo digital da Zandrix. Sou uma inteligência artificial criada para representar a inovação, a velocidade e a criatividade que colocamos em cada projeto.</p>
+                <p>Estou aqui para te ajudar a navegar pelo futuro da web e garantir que sua experiência seja nada menos que extraordinária. Vamos construir algo incrível juntos!</p>
+            </div>
+        </div>
+    </section>
 
-                // Logo 3D Abstrata (Icosaedro Futurista)
-                const geometry = new THREE.IcosahedronGeometry(1, 1);
-                const material = new THREE.MeshStandardMaterial({ 
-                    color: 0x111111,
-                    roughness: 0.1,
-                    metalness: 0.9,
-                    wireframe: false
-                });
-                const wireframeMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x8A2BE2,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.3
-                });
+    <!-- PÁGINA 3: SERVIÇOS -->
+    <section id="services">
+        <h2 class="section-title">Nossos Serviços</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Criação de Sites</h3>
+                <p>Sites institucionais com design exclusivo e código limpo.</p>
+            </div>
+            <div class="card">
+                <h3>Landing Pages</h3>
+                <p>Páginas de alta conversão focadas em vendas.</p>
+            </div>
+            <div class="card">
+                <h3>E-commerce</h3>
+                <p>Lojas virtuais robustas e seguras.</p>
+            </div>
+            <div class="card">
+                <h3>SEO Avançado</h3>
+                <p>Otimização para aparecer no topo do Google.</p>
+            </div>
+        </div>
+    </section>
 
-                const logoMesh = new THREE.Mesh(geometry, material);
-                const logoWireframe = new THREE.Mesh(geometry, wireframeMaterial);
-                
-                // Grupo para a logo
-                const logoGroup = new THREE.Group();
-                logoGroup.add(logoMesh);
-                logoGroup.add(logoWireframe);
-                logoGroup.position.set(3, 0, -2); // Posicionar à direita na Home
-                
-                // Adicionar apenas se a tela for grande
-                if(window.innerWidth > 768) {
-                    scene.add(logoGroup);
-                }
+    <!-- PÁGINA NOVA: PLANOS E PREÇOS -->
+    <section id="pricing">
+        <h2 class="section-title">Nossos Planos</h2>
+        <div class="grid-container">
+            <!-- Plano Essencial -->
+            <div class="card pricing-card">
+                <h3>Essencial</h3>
+                <div class="price">R$100<span>/mês</span></div>
+                <ul>
+                    <li>Landing Page Simples</li>
+                    <li>Design Responsivo</li>
+                    <li>Formulário de Contato</li>
+                    <li>Suporte Básico</li>
+                </ul>
+                <a href="#quote" class="btn-cta">Contratar</a>
+            </div>
+            <!-- Plano Padrão (Destaque) -->
+            <div class="card pricing-card highlighted">
+                <h3>Padrão</h3>
+                <div class="price">R$150<span>/mês</span></div>
+                <ul>
+                    <li>Site Institucional (5 pág.)</li>
+                    <li>Design Personalizado</li>
+                    <li>SEO Básico</li>
+                    <li>Suporte Prioritário</li>
+                </ul>
+                <a href="#quote" class="btn-primary" style="width: 100%; border: none;">Contratar</a>
+            </div>
+            <!-- Plano Premium -->
+            <div class="card pricing-card">
+                <h3>Premium</h3>
+                <div class="price">R$200<span>/mês</span></div>
+                <ul>
+                    <li>Site Completo ou E-commerce</li>
+                    <li>Design com Animações 3D</li>
+                    <li>SEO Avançado</li>
+                    <li>Suporte Premium 24/7</li>
+                </ul>
+                <a href="#quote" class="btn-cta">Contratar</a>
+            </div>
+        </div>
+    </section>
 
-                // Luzes
-                const ambientLight = new THREE.AmbientLight(0x404040, 2);
-                scene.add(ambientLight);
+    <!-- PÁGINA 4: SOLUÇÕES -->
+    <section id="solutions">
+        <h2 class="section-title">Soluções Digitais</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Para Empresas</h3>
+                <p>Consolide sua marca no mercado corporativo.</p>
+            </div>
+            <div class="card">
+                <h3>Para Profissionais</h3>
+                <p>Portfólios e sites pessoais que geram autoridade.</p>
+            </div>
+            <div class="card">
+                <h3>Negócios Locais</h3>
+                <p>Atraia clientes da sua região com Google Maps e SEO local.</p>
+            </div>
+        </div>
+    </section>
 
-                const pointLight = new THREE.PointLight(0x8A2BE2, 2, 100);
-                pointLight.position.set(5, 5, 5);
-                scene.add(pointLight);
-                
-                const blueLight = new THREE.PointLight(0x00ffff, 1, 50);
-                blueLight.position.set(-5, -5, 5);
-                scene.add(blueLight);
+    <!-- NOVA SEÇÃO: PROCESSO -->
+    <section id="process">
+        <h2 class="section-title">Nosso Processo</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>1. Imersão</h3>
+                <p>Mergulhamos no seu negócio para entender sua essência e objetivos.</p>
+            </div>
+            <div class="card">
+                <h3>2. Arquitetura</h3>
+                <p>Planejamos a estrutura ideal para conversão e experiência do usuário.</p>
+            </div>
+            <div class="card">
+                <h3>3. Desenvolvimento</h3>
+                <p>Codificação limpa, rápida e otimizada com tecnologias de ponta.</p>
+            </div>
+            <div class="card">
+                <h3>4. Lançamento</h3>
+                <p>Testes rigorosos e deploy em servidores de alta performance.</p>
+            </div>
+        </div>
+    </section>
 
-                camera.position.z = 5;
+    <!-- NOVA SEÇÃO: DIFERENCIAIS -->
+    <section id="differentials">
+        <h2 class="section-title">Por que a Zandrix?</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Velocidade Extrema</h3>
+                <p>Sites otimizados que carregam em milissegundos.</p>
+            </div>
+            <div class="card">
+                <h3>Design Futurista</h3>
+                <p>Visual único que destaca sua marca da concorrência.</p>
+            </div>
+            <div class="card">
+                <h3>Suporte Premium</h3>
+                <p>Atendimento rápido e humanizado via WhatsApp.</p>
+            </div>
+        </div>
+    </section>
 
-                // Animação
-                let mouseX = 0;
-                let mouseY = 0;
-                let targetX = 0;
-                let targetY = 0;
+    <!-- PÁGINA 6: FERRAMENTAS (CARROSSEL) -->
+    <section id="tools">
+        <h2 class="section-title">Tecnologias que Dominamos</h2>
+        <div class="tools-carousel">
+            <div class="tools-track">
+                <!-- Logos appear twice for seamless loop -->
+                <div class="tool-logo"><i class="fab fa-react"></i></div>
+                <div class="tool-logo"><i class="fab fa-node-js"></i></div>
+                <div class="tool-logo"><i class="fab fa-python"></i></div>
+                <div class="tool-logo"><i class="fab fa-aws"></i></div>
+                <div class="tool-logo"><i class="fab fa-html5"></i></div>
+                <div class="tool-logo"><i class="fab fa-css3-alt"></i></div>
+                <div class="tool-logo"><i class="fab fa-js-square"></i></div>
+                <div class="tool-logo"><i class="fab fa-git-alt"></i></div>
+                <div class="tool-logo"><i class="fab fa-docker"></i></div>
+                <!-- Duplicate set -->
+                <div class="tool-logo"><i class="fab fa-react"></i></div>
+                <div class="tool-logo"><i class="fab fa-node-js"></i></div>
+                <div class="tool-logo"><i class="fab fa-python"></i></div>
+                <div class="tool-logo"><i class="fab fa-aws"></i></div>
+                <div class="tool-logo"><i class="fab fa-html5"></i></div>
+                <div class="tool-logo"><i class="fab fa-css3-alt"></i></div>
+                <div class="tool-logo"><i class="fab fa-js-square"></i></div>
+                <div class="tool-logo"><i class="fab fa-git-alt"></i></div>
+                <div class="tool-logo"><i class="fab fa-docker"></i></div>
+            </div>
+        </div>
+    </section>
 
-                const handleMouseMove = (event) => {
-                    mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
-                    mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
-                };
+    <!-- PÁGINA 7: TECNOLOGIA -->
+    <section id="tech">
+        <h2 class="section-title">Stack Tecnológico</h2>
+        <div class="grid-container">
+            <div class="card">
+                <h3>Frontend</h3>
+                <p>React, Three.js, GSAP, Next.js</p>
+            </div>
+            <div class="card">
+                <h3>Backend</h3>
+                <p>Node.js, Python, AWS Cloud</p>
+            </div>
+            <div class="card">
+                <h3>Performance</h3>
+                <p>WebP, Lazy Loading, CDN Global</p>
+            </div>
+        </div>
+    </section>
 
-                document.addEventListener('mousemove', handleMouseMove);
+    <!-- PÁGINA 8: RESULTADOS -->
+    <section id="results">
+        <h2 class="section-title">Impacto Gerado</h2>
+        <div class="stats-container">
+            <div class="stat-box">
+                <h2 id="count1">0</h2>
+                <p>Projetos Entregues</p>
+            </div>
+            <div class="stat-box">
+                <h2 id="count2">0</h2>
+                <p>Clientes Satisfeitos</p>
+            </div>
+            <div class="stat-box">
+                <h2 id="count3">0</h2>
+                <p>Anos de Inovação</p>
+            </div>
+        </div>
+    </section>
 
-                const animate = () => {
-                    requestAnimationFrame(animate);
+    <!-- PÁGINA 9: BLOG -->
+    <section id="blog">
+        <h2 class="section-title">Insights</h2>
+        <div class="grid-container">
+            <div class="card">
+                <span style="color: var(--primary-color); font-size: 0.8rem;">MARKETING</span>
+                <h3>Como aumentar conversão em 2024</h3>
+                <p>Estratégias avançadas de UX Design.</p>
+            </div>
+            <div class="card">
+                <span style="color: var(--primary-color); font-size: 0.8rem;">TECH</span>
+                <h3>O futuro da Web 3.0</h3>
+                <p>O que esperar da internet descentralizada.</p>
+            </div>
+        </div>
+    </section>
 
-                    targetX = mouseX * 0.5;
-                    targetY = mouseY * 0.5;
+    <!-- PÁGINA 10: ORÇAMENTO -->
+    <section id="quote">
+        <h2 class="section-title">Solicite um Orçamento</h2>
+        <form>
+            <input type="text" placeholder="Seu Nome" required>
+            <input type="email" placeholder="Seu E-mail Corporativo" required>
+            <select>
+                <option>Tipo de Projeto</option>
+                <option>Site Institucional</option>
+                <option>E-commerce</option>
+                <option>Landing Page</option>
+            </select>
+            <textarea rows="5" placeholder="Detalhes do projeto..."></textarea>
+            <button type="submit" class="btn-primary" style="border:none; cursor:pointer; width:100%;">Enviar Solicitação</button>
+        </form>
+    </section>
 
-                    // Rotação suave das partículas
-                    particlesMesh.rotation.y += 0.0005;
-                    particlesMesh.rotation.x += 0.0002;
+    <!-- PÁGINA 11: CONTATO -->
+    <section id="contact">
+        <h2 class="section-title">Fale Conosco</h2>
+        <div class="grid-container" style="text-align: center;">
+            <div class="card">
+                <h3>WhatsApp</h3>
+                <p>(33) 99815-4570</p>
+                <a href="https://wa.me/5533998154570" style="color: var(--primary-color);">Iniciar conversa</a>
+            </div>
+            <div class="card">
+                <h3>Instagram</h3>
+                <p>@zandrixbr</p>
+            </div>
+            <div class="card">
+                <h3>Email</h3>
+                <p>contato@zandrix.com.br</p>
+            </div>
+        </div>
+    </section>
 
-                    // Rotação da Logo
-                    logoGroup.rotation.x += 0.005;
-                    logoGroup.rotation.y += 0.005;
-                    
-                    // Movimento parallax suave
-                    logoGroup.rotation.y += 0.05 * (targetX - logoGroup.rotation.y);
-                    logoGroup.rotation.x += 0.05 * (targetY - logoGroup.rotation.x);
+    <!-- PÁGINA NOVA: ASSISTENTE VIRTUAL / FAQ -->
+    <section id="faq">
+        <h2 class="section-title">Assistente Zandrix</h2>
+        <div class="faq-accordion">
+            <!-- Perguntas sobre Serviços -->
+            <div class="faq-item">
+                <button class="faq-question">Que tipo de sites vocês criam?</button>
+                <div class="faq-answer"><p>Criamos sites institucionais, landing pages de alta conversão, e-commerces robustos e portfólios digitais. Cada projeto é 100% personalizado.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Vocês fazem otimização para o Google (SEO)?</button>
+                <div class="faq-answer"><p>Sim, o SEO (Search Engine Optimization) é um pilar fundamental do nosso desenvolvimento. Todos os sites são entregues com uma estrutura otimizada para os motores de busca.</p></div>
+            </div>
+            <!-- Perguntas sobre Preços -->
+            <div class="faq-item">
+                <button class="faq-question">Quanto custa para criar um site?</button>
+                <div class="faq-answer"><p>O valor de cada projeto varia conforme a complexidade e os recursos desejados. Entre em contato através do nosso formulário de orçamento para uma cotação precisa.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Quais são as formas de pagamento?</button>
+                <div class="faq-answer"><p>Aceitamos PIX, transferência bancária e cartão de crédito (via link de pagamento). Oferecemos opções de parcelamento para facilitar seu investimento.</p></div>
+            </div>
+            <!-- Perguntas sobre Processo -->
+            <div class="faq-item">
+                <button class="faq-question">Qual o prazo para a entrega de um site?</button>
+                <div class="faq-answer"><p>O prazo médio varia de 20 a 45 dias, dependendo da complexidade do projeto. Uma landing page simples pode ser mais rápida, enquanto um e-commerce completo demanda mais tempo.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Preciso ter um domínio e hospedagem?</button>
+                <div class="faq-answer"><p>Sim. O domínio (ex: suaempresa.com.br) é o seu endereço na internet e a hospedagem é o servidor onde seu site fica armazenado. Podemos auxiliar você em todo o processo de aquisição.</p></div>
+            </div>
+            <!-- Perguntas sobre Tecnologia -->
+            <div class="faq-item">
+                <button class="faq-question">Meu site vai funcionar bem em celulares?</button>
+                <div class="faq-answer"><p>Com certeza. Todos os nossos projetos são 100% responsivos, garantindo uma experiência perfeita em desktops, tablets e celulares.</p></div>
+            </div>
+            <!-- Adicione mais 23+ perguntas aqui para totalizar 30+ -->
+            <div class="faq-item">
+                <button class="faq-question">O que é um site institucional?</button>
+                <div class="faq-answer"><p>É o cartão de visitas digital da sua empresa, apresentando quem você é, seus serviços, história e formas de contato para gerar credibilidade e autoridade.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">O que é uma Landing Page?</button>
+                <div class="faq-answer"><p>É uma página única, focada em uma única ação (conversão), como vender um produto, capturar um lead ou inscrever para um evento. É ideal para campanhas de marketing.</p></div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Vocês oferecem suporte após a entrega?</button>
+                <div class="faq-answer"><p>Sim, oferecemos um período de suporte gratuito para ajustes e correções. Também temos planos de manutenção mensais para garantir que seu site esteja sempre seguro e atualizado.</p></div>
+            </div>
+            <!-- ... continue adicionando até 30+ ... -->
 
-                    renderer.render(scene, camera);
-                };
+        </div>
+    </section>
 
-                animate();
+    <!-- PÁGINA 12: SUPORTE -->
+    <section id="support">
+        <h2 class="section-title">Área do Cliente</h2>
+        <div class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
+            <h3>Precisa de ajuda?</h3>
+            <p>Acesse nossa base de conhecimento ou abra um ticket.</p>
+            <br>
+            <a href="#" class="btn-cta">Acessar Portal</a>
+        </div>
+    </section>
 
-                const handleResize = () => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                    
-                    if(window.innerWidth <= 768) {
-                        scene.remove(logoGroup);
-                    } else {
-                        scene.add(logoGroup);
-                    }
-                };
+    <!-- RODAPÉ -->
+    <footer>
+        <p class="footer-dots">...</p>
+        <p class="copyright">© Zandrix — Criando presença digital para empresas que querem crescer.</p>
+    </footer>
 
-                window.addEventListener('resize', handleResize);
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/5533998154570" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
-                return () => {
-                    window.removeEventListener('resize', handleResize);
-                    document.removeEventListener('mousemove', handleMouseMove);
-                    mountRef.current.removeChild(renderer.domElement);
-                };
-            }, []);
-
-            return <div id="canvas-container" ref={mountRef} />;
-        };
-
-        // --- COMPONENTE: NAVBAR ---
-        const Navbar = ({ activeSection, setActiveSection }) => {
-            const links = [
-                { name: 'Home', id: 'home' },
-                { name: 'Sobre', id: 'sobre' },
-                { name: 'Serviços', id: 'servicos' },
-                { name: 'Portfólio', id: 'portfolio' },
-                { name: 'Contato', id: 'contato' },
-            ];
-
-            return (
-                <motion.nav 
-                    initial={{ y: -100 }}
-                    animate={{ y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="fixed top-0 w-full z-50 glass-panel border-b border-zandrix-purple/20"
-                >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-20">
-                            <div className="flex-shrink-0 cursor-pointer" onClick={() => setActiveSection('home')}>
-                                <h1 className="font-orbitron text-2xl font-bold text-white tracking-wider">
-                                    ZANDRIX<span className="text-zandrix-purple">.</span>
-                                </h1>
-                            </div>
-                            <div className="hidden md:block">
-                                <div className="ml-10 flex items-baseline space-x-8">
-                                    {links.map((link) => (
-                                        <button
-                                            key={link.name}
-                                            onClick={() => {
-                                                setActiveSection(link.id);
-                                                document.getElementById(link.id)?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
-                                            className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                                                activeSection === link.id 
-                                                ? 'text-zandrix-purple neon-text' 
-                                                : 'text-gray-300 hover:text-white hover:bg-white/10'
-                                            }`}
-                                        >
-                                            {link.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <a 
-                                    href="https://wa.me/5533998154570" 
-                                    target="_blank"
-                                    className="bg-zandrix-purple hover:bg-purple-600 text-white px-6 py-2 rounded-full font-medium transition-all duration-300 neon-button flex items-center gap-2"
-                                >
-                                    <span>WhatsApp</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </motion.nav>
-            );
-        };
-
-        // --- SEÇÃO: HERO (HOME) ---
-        const Hero = () => {
-            return (
-                <section id="home" className="min-h-screen flex items-center justify-start px-4 sm:px-12 relative pt-20">
-                    <div className="max-w-4xl z-10">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                        >
-                            <h2 className="text-zandrix-purple font-orbitron text-lg mb-4 tracking-[0.2em]">INOVAÇÃO DIGITAL</h2>
-                            <h1 className="text-5xl md:text-7xl font-bold font-orbitron leading-tight mb-6 text-white">
-                                Transformamos empresas comuns em <br/>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-zandrix-purple to-white neon-text">
-                                    presenças extraordinárias.
-                                </span>
-                            </h1>
-                            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
-                                Design inspirado na engenharia aeroespacial. Performance de nível global. 
-                                A Zandrix cria o futuro da sua marca hoje.
-                            </p>
-                            
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <motion.button 
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="bg-zandrix-purple text-white px-8 py-4 rounded-lg font-bold text-lg neon-button"
-                                    onClick={() => document.getElementById('contato').scrollIntoView({ behavior: 'smooth' })}
-                                >
-                                    INICIAR PROJETO
-                                </motion.button>
-                                <motion.button 
-                                    whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="border border-zandrix-purple text-white px-8 py-4 rounded-lg font-bold text-lg hover:border-white transition-colors"
-                                    onClick={() => document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' })}
-                                >
-                                    VER PORTFÓLIO
-                                </motion.button>
-                            </div>
-                        </motion.div>
-                    </div>
-                </section>
-            );
-        };
-
-        // --- SEÇÃO: SERVIÇOS ---
-        const Services = () => {
-            const services = [
-                { title: "Sites Profissionais", desc: "Plataformas robustas com design premium e alta conversão.", icon: "💻" },
-                { title: "E-commerce", desc: "Lojas virtuais otimizadas para vendas e experiência do usuário.", icon: "🛍️" },
-                { title: "SEO Avançado", desc: "Posicionamento estratégico no Google para dominar seu nicho.", icon: "🚀" },
-                { title: "Landing Pages", desc: "Páginas de alta performance focadas em capturar leads.", icon: "🎯" },
-            ];
-
-            return (
-                <section id="servicos" className="py-24 px-4 relative">
-                    <div className="max-w-7xl mx-auto">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            className="text-center mb-16"
-                        >
-                            <h2 className="text-zandrix-purple font-orbitron text-xl mb-2">NOSSAS SOLUÇÕES</h2>
-                            <h3 className="text-4xl font-bold text-white">Tecnologia de Ponta</h3>
-                        </motion.div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {services.map((service, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    whileHover={{ y: -10 }}
-                                    className="glass-panel p-8 rounded-2xl hover:border-zandrix-purple transition-colors duration-300 group"
-                                >
-                                    <div className="text-4xl mb-6 bg-zandrix-purple/20 w-16 h-16 rounded-full flex items-center justify-center group-hover:bg-zandrix-purple/40 transition-colors">
-                                        {service.icon}
-                                    </div>
-                                    <h4 className="text-xl font-bold mb-4 font-orbitron">{service.title}</h4>
-                                    <p className="text-gray-400 text-sm leading-relaxed">{service.desc}</p>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        // --- SEÇÃO: PORTFÓLIO ---
-        const Portfolio = () => {
-            return (
-                <section id="portfolio" className="py-24 px-4 bg-black/50">
-                    <div className="max-w-7xl mx-auto">
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            className="mb-12 flex justify-between items-end"
-                        >
-                            <div>
-                                <h2 className="text-zandrix-purple font-orbitron text-xl mb-2">PORTFÓLIO</h2>
-                                <h3 className="text-4xl font-bold text-white">Projetos Recentes</h3>
-                            </div>
-                        </motion.div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {[1, 2, 3].map((item) => (
-                                <motion.div 
-                                    key={item}
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    whileHover={{ scale: 1.02 }}
-                                    className="relative aspect-video rounded-xl overflow-hidden cursor-pointer group border border-gray-800"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80 z-10"></div>
-                                    {/* Placeholder Image - Em produção usar imagens reais */}
-                                    <img 
-                                        src={`https://source.unsplash.com/random/800x600?tech,website&sig=${item}`} 
-                                        alt="Projeto" 
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                    />
-                                    <div className="absolute bottom-0 left-0 p-6 z-20">
-                                        <h4 className="text-xl font-bold font-orbitron text-white">Projeto Alpha {item}</h4>
-                                        <p className="text-zandrix-purple text-sm">Web Design & Dev</p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        // --- SEÇÃO: CONTATO ---
-        const Contact = () => {
-            return (
-                <section id="contato" className="py-24 px-4 relative overflow-hidden">
-                    <div className="max-w-4xl mx-auto glass-panel rounded-3xl p-8 md:p-16 relative z-10">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl md:text-5xl font-bold font-orbitron mb-4">Vamos Criar o Futuro?</h2>
-                            <p className="text-gray-400">Solicite um orçamento e eleve o nível da sua empresa.</p>
-                        </div>
-
-                        <form className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <input type="text" placeholder="Nome" className="w-full bg-black/50 border border-gray-700 rounded-lg p-4 text-white focus:border-zandrix-purple focus:outline-none transition-colors" />
-                                <input type="email" placeholder="Email" className="w-full bg-black/50 border border-gray-700 rounded-lg p-4 text-white focus:border-zandrix-purple focus:outline-none transition-colors" />
-                            </div>
-                            <input type="text" placeholder="Empresa" className="w-full bg-black/50 border border-gray-700 rounded-lg p-4 text-white focus:border-zandrix-purple focus:outline-none transition-colors" />
-                            <textarea rows="4" placeholder="Detalhes do Projeto" className="w-full bg-black/50 border border-gray-700 rounded-lg p-4 text-white focus:border-zandrix-purple focus:outline-none transition-colors"></textarea>
-                            
-                            <button className="w-full bg-zandrix-purple hover:bg-purple-600 text-white font-bold py-4 rounded-lg neon-button transition-all">
-                                ENVIAR SOLICITAÇÃO
-                            </button>
-                        </form>
-
-                        <div className="mt-12 flex justify-center gap-8 text-gray-400">
-                            <a href="https://wa.me/5533998154570" className="hover:text-zandrix-purple transition-colors flex items-center gap-2">
-                                <span>WhatsApp: (33) 99815-4570</span>
-                            </a>
-                            <a href="#" className="hover:text-zandrix-purple transition-colors">
-                                @zandrixbr
-                            </a>
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        // --- COMPONENTE: FOOTER ---
-        const Footer = () => {
-            return (
-                <footer className="border-t border-gray-900 py-12 bg-black text-center relative z-10">
-                    <div className="flex justify-center items-center mb-6 opacity-50 hover:opacity-100 transition-opacity">
-                        {/* Simulação da Logo Pequena */}
-                        <div className="w-8 h-8 border border-zandrix-purple rounded-full flex items-center justify-center mr-2">
-                            <div className="w-2 h-2 bg-zandrix-purple rounded-full"></div>
-                        </div>
-                        <span className="font-orbitron font-bold text-xl">ZANDRIX</span>
-                    </div>
-                    <p className="text-gray-600 text-sm">
-                        © {new Date().getFullYear()} Zandrix — Criando presença digital para empresas que querem crescer.
-                    </p>
-                </footer>
-            );
-        };
-
-        // --- APP PRINCIPAL ---
-        const App = () => {
-            const [activeSection, setActiveSection] = useState('home');
-
-            // Efeito de scroll para atualizar o menu ativo
-            useEffect(() => {
-                const handleScroll = () => {
-                    const sections = ['home', 'sobre', 'servicos', 'portfolio', 'contato'];
-                    const scrollPosition = window.scrollY + 200;
-
-                    for (const section of sections) {
-                        const element = document.getElementById(section);
-                        if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
-                            setActiveSection(section);
-                        }
-                    }
-                };
-
-                window.addEventListener('scroll', handleScroll);
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
-
-            return (
-                <div className="relative w-full min-h-screen">
-                    <Background3D />
-                    <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
-                    
-                    <main>
-                        <Hero />
-                        
-                        {/* Seção Sobre (Simplificada para o exemplo) */}
-                        <section id="sobre" className="py-20 px-4 text-center">
-                            <motion.div 
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                className="max-w-3xl mx-auto"
-                            >
-                                <h2 className="text-zandrix-purple font-orbitron mb-4">SOBRE NÓS</h2>
-                                <p className="text-2xl text-gray-300 leading-relaxed">
-                                    "Não criamos apenas sites. Criamos ecossistemas digitais que respiram inovação e exalam autoridade."
-                                </p>
-                            </motion.div>
-                        </section>
-
-                        <Services />
-                        <Portfolio />
-                        <Contact />
-                    </main>
-
-                    <Footer />
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-    
-    <!-- Inicialização dos ícones Lucide -->
     <script>
-        lucide.createIcons();
+        // --- THREE.JS BACKGROUND (Particles & Network) ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 500; // Reduced for performance with lines
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15; // Spread
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x8A2BE2,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(particlesMesh);
+
+        // Lines connecting particles
+        const linesGeometry = new THREE.BufferGeometry();
+        const linesMaterial = new THREE.LineBasicMaterial({
+            color: 0x8A2BE2,
+            transparent: true,
+            opacity: 0.1
+        });
+        const linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
+        scene.add(linesMesh);
+
+
+
+
+
+        // Floating Cubes (Geometric Shapes)
+        const geometryCube = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const materialCube = new THREE.MeshBasicMaterial({ color: 0x8A2BE2, wireframe: true, transparent: true, opacity: 0.3 });
+        const cube1 = new THREE.Mesh(geometryCube, materialCube);
+        const cube2 = new THREE.Mesh(geometryCube, materialCube);
+        
+        cube1.position.set(3, 2, -2);
+        cube2.position.set(-3, -1, -2);
+        scene.add(cube1);
+        scene.add(cube2);
+
+        camera.position.z = 5;
+
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX / window.innerWidth - 0.5;
+            mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        // --- THREE.JS HERO LOGO (3D Rotating) ---
+        const logoScene = new THREE.Scene();
+        const logoCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        const logoRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        const logoContainer = document.getElementById('hero-logo-container');
+        
+        logoRenderer.setSize(300, 300);
+        logoContainer.appendChild(logoRenderer.domElement);
+
+        // Create a Cube with the logo texture
+        const textureLoader = new THREE.TextureLoader();
+        // Note: Using a placeholder texture if Imgur blocks CORS or fails. 
+        // In production, host the image locally.
+        const logoTexture = textureLoader.load('https://i.imgur.com/w28Wu0f.png', 
+            undefined, 
+            undefined, 
+            (err) => console.log("Texture error, using wireframe fallback")
+        );
+
+        const logoGeo = new THREE.BoxGeometry(2.5, 2.5, 2.5);
+        const logoMat = new THREE.MeshStandardMaterial({ 
+            map: logoTexture,
+            color: 0xffffff,
+            metalness: 0.7,
+            roughness: 0.2,
+        });
+        
+        // Fallback material if texture fails (Purple Wireframe)
+        const logoMatFallback = new THREE.MeshBasicMaterial({ color: 0x8A2BE2, wireframe: true });
+
+        const logoMesh = new THREE.Mesh(logoGeo, logoMat);
+        logoScene.add(logoMesh);
+
+        // Lights for Logo
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        logoScene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x8A2BE2, 2);
+        pointLight.position.set(5, 5, 5);
+        logoScene.add(pointLight);
+
+        logoCamera.position.z = 4.5;
+
+        // --- ANIMATION LOOP ---
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            // Background Animation
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+            
+            // Parallax effect
+            particlesMesh.rotation.x += mouseY * 0.01;
+            particlesMesh.rotation.y += mouseX * 0.01;
+
+            cube1.rotation.x += 0.01;
+
+            // Animate connecting lines
+            const positions = particlesMesh.geometry.attributes.position.array;
+            const linesPositions = [];
+            const particleCount = particlesMesh.geometry.attributes.position.count;
+            const connectDistance = 1.5;
+
+            for (let i = 0; i < particleCount; i++) {
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = positions[i * 3] - positions[j * 3];
+                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                    if (distance < connectDistance) {
+                        linesPositions.push(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+                        linesPositions.push(positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]);
+                    }
+                }
+            }
+            linesMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linesPositions, 3));
+
+            cube1.rotation.y += 0.01;
+            cube2.rotation.x -= 0.01;
+            cube2.rotation.y -= 0.01;
+
+            renderer.render(scene, camera);
+
+            // Logo Animation
+            // Default rotation
+            logoMesh.rotation.y += 0.005;
+            // Interactive rotation based on mouse position
+            logoMesh.rotation.y += (mouseX * 2 - logoMesh.rotation.y) * 0.05;
+            logoMesh.rotation.x += (-mouseY * 2 - logoMesh.rotation.x) * 0.05;
+            logoRenderer.render(logoScene, logoCamera);
+        };
+
+        animate();
+
+        // --- PRELOADER & SOUND ---
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('hidden');
+
+            // Try to play sound after a small delay
+            const ambientSound = document.getElementById('ambient-sound');
+            ambientSound.volume = 0.1; // Keep it subtle
+            
+            const playPromise = ambientSound.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // Autoplay was prevented. We'll play on the first user interaction.
+                    console.log("Autoplay prevented. Waiting for user interaction.");
+                    document.body.addEventListener('click', () => ambientSound.play(), { once: true });
+                    document.body.addEventListener('scroll', () => ambientSound.play(), { once: true });
+                });
+            }
+        });
+
+        // --- TYPEWRITER EFFECT ---
+        const typewriterElement = document.getElementById('typewriter');
+        const text = "Design futurista. Tecnologia de ponta. Autoridade absoluta.";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                typewriterElement.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
+                i++;
+                setTimeout(typeWriter, 70);
+            } else {
+                // Blinking cursor at the end
+                typewriterElement.innerHTML = text + '<span class="cursor"></span>';
+            }
+        }
+        // Start after a delay
+        setTimeout(typeWriter, 1000);
+
+
+        // --- FAQ ACCORDION ---
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                // Optional: close all others
+                // faqItems.forEach(otherItem => otherItem.classList.remove('active'));
+                if (!isActive) {
+                    item.classList.add('active');
+                } else { item.classList.remove('active'); }
+            });
+        });
+
+        // --- SCROLL ANIMATIONS (Intersection Observer) ---
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Staggered animation for children
+                    const children = entry.target.querySelectorAll('.card, .stat-box, .mascot-image, .ceo-image');
+                    children.forEach((child, index) => {
+                        child.style.transitionDelay = `${index * 150}ms`;
+                    });
+                    
+                    // Trigger number counters if it's the results section
+                    if(entry.target.id === 'results') {
+                        animateValue("count1", 0, 150, 2000);
+                        animateValue("count2", 0, 148, 2000);
+                        animateValue("count3", 0, 5, 2000);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Number Counter Logic
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start) + "+";
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Window Resize Handling
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
     </script>
 </body>
 </html>
