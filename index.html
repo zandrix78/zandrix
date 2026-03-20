@@ -1,1440 +1,1113 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zandrix | Sites e SaaS</title>
+    <title>Zandrix | Websites & SaaS de Alta Performance</title>
+    <meta name="description" content="Criação de Sites Profissionais e Desenvolvimento de SaaS. A Zandrix une design futurista e tecnologia de ponta.">
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Bibliotecas Adicionais (Efeitos Visuais) -->
+    <!-- Vanilla Tilt (Efeito 3D nos Cards) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+    <!-- SweetAlert2 (Popups Bonitos) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Typed.js (Efeito de Digitação) -->
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Configuração Personalizada do Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zandrix: {
+                            dark: '#0a0a0a',
+                            card: '#121212',
+                            primary: '#7c3aed', // Violeta/Roxo
+                            accent: '#a78bfa',
+                            glow: '#8b5cf6' 
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'], // Fonte futurista para títulos
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(139, 92, 246, 0.5)',
+                        'neon-hover': '0 0 30px rgba(139, 92, 246, 0.8)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fontes Google (Inter e Orbitron para o visual futurista) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     
-    <!-- Three.js for 3D Elements -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- AOS Animation Library CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper CSS (Para o Carrossel) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg-color: #000000;
-            --primary-color: #8A2BE2; /* Roxo Tecnológico */
-            --text-main: #8A2BE2;
-            --text-sec: #e0ccff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(138, 43, 226, 0.3);
-            --glow: 0 0 20px rgba(138, 43, 226, 0.6);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-sec);
             font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
             overflow-x: hidden;
-            text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
         }
-
-        h1, h2, h3, h4 {
+        
+        h1, h2, h3, .brand-font {
             font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
-        /* --- 3D Background Canvas --- */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.6;
+        /* Efeito de Gradiente de Fundo */
+        .bg-gradient-radial {
+            background: radial-gradient(circle at center, rgba(124, 58, 237, 0.15) 0%, rgba(5, 5, 5, 0) 70%);
         }
 
-        /* --- Preloader --- */
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 4px;
+        }
+
+        /* Accordion Animation */
+        .faq-content {
+            transition: max-height 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .faq-toggle:checked + label + .faq-content {
+            max-height: 200px;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-toggle:checked + label .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Preloader CSS */
         #preloader {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
+            inset: 0;
+            background: #050505;
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 0.5s ease;
+        }
+        .loader {
+            border: 4px solid rgba(124, 58, 237, 0.1);
+            border-left-color: #7c3aed;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Cursor do Typed.js */
+        .typed-cursor {
+            color: #7c3aed;
+            font-size: 1em;
         }
 
-        #preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .preloader-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: var(--primary-color);
-            text-shadow: var(--glow);
-            margin-bottom: 20px;
-            animation: titleGlow 2s infinite alternate;
-        }
-
-
-
-
-        /* --- Navigation --- */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .nav-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: var(--text-sec);
-            font-weight: bold;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .nav-logo::before,
-        .nav-logo::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-        }
-
-        .nav-logo::before {
-            left: 2px;
-            text-shadow: -1px 0 #ff00c1;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-1 3s infinite linear alternate-reverse;
-        }
-
-        .nav-logo::after {
-            left: -2px;
-            text-shadow: -1px 0 #00fff9;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim-2 2s infinite linear alternate-reverse;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-sec);
-            text-decoration: none;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            transition: color 0.3s;
-            opacity: 0.8;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-color);
-            text-shadow: 0 0 10px var(--primary-color);
-            opacity: 1;
-        }
-
-        .btn-cta {
-            background: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 10px 25px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
-        }
-
-        .btn-cta:hover {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: var(--glow);
-        }
-
-        /* --- Sections General --- */
-        section {
-            padding: 100px 10%;
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 50px;
-            background: linear-gradient(90deg, #fff, var(--primary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center; /* Adicionado para centralizar o texto */
-            opacity: 0; /* For animation */
-            transform: translateY(30px);
-            transition: all 1s ease;
-            text-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
-            animation: titleGlow 3s infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); }
-            100% { text-shadow: 0 0 25px rgba(138, 43, 226, 0.9), 0 0 5px #fff; }
-        }
-
-        .visible .section-title {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Hero Section (Page 1) --- */
-        #home {
-            height: 100vh;
-            align-items: center;
-            text-align: center;
-        }
-
-        #hero-logo-container {
-            width: 300px;
-            height: 300px;
-            margin-bottom: 30px;
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, #8A2BE2);
-            background: linear-gradient(90deg, #fff 20%, #8A2BE2 40%, #fff 60%, #8A2BE2 80%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.5));
-            animation: shine 8s linear infinite, titleGlow 3s infinite alternate;
-        }
-
-        @keyframes shine {
-            to {
-                background-position: -200% center;
-            }
+        /* --- NOVOS ESTILOS (Referência Houzzes) --- */
+        /* Grid Background Pattern */
+        .bg-grid-pattern {
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            pointer-events: none; 
         }
         
-        .hero-subtitle {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 40px;
-            max-width: 600px;
+        /* Marquee Animation */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
         }
-
-        .hero-subtitle .cursor {
+        .marquee-content {
             display: inline-block;
-            width: 10px;
-            height: 1.2rem;
-            background: #ccc;
-            animation: blink 1s infinite;
+            animation: marquee 25s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
+        /* --- NOVOS ESTILOS (Referência Houzzes) --- */
+        .animate-shine {
+            background: linear-gradient(90deg, white, #a78bfa, white);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+        @keyframes shine {
+            to { background-position: -200% center; }
         }
 
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: var(--glow);
-            transition: transform 0.3s;
+        /* Customização dos Pontos do Swiper */
+        .swiper-pagination-bullet {
+            background: #4b5563;
+            opacity: 0.5;
         }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-        }
-
-        /* --- Cards Grid (Services/Solutions) --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            width: 100%;
-        }
-
-        .card {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            padding: 40px;
-            border-radius: 15px;
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            /* For scroll animation */
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--glow);
-            background: rgba(138, 43, 226, 0.1);
-        }
-
-        .card h3 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .card p {
-            color: var(--text-sec);
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-
-        .visible .card,
-        .visible .stat-box,
-        .visible .ceo-image {
+        .swiper-pagination-bullet-active {
+            background: #7c3aed; /* zandrix-primary */
             opacity: 1;
-            transform: translateY(0);
+            box-shadow: 0 0 10px #7c3aed;
+        }
+        /* Customização das Setas do Swiper */
+        .swiper-button-next, .swiper-button-prev {
+            color: #7c3aed;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* --- Pricing Table --- */
-        .pricing-card {
-            text-align: center;
-            border: 2px solid var(--glass-border);
-        }
-
-        .pricing-card.highlighted {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-            box-shadow: var(--glow);
-        }
-
-        .pricing-card h3 {
-            font-size: 1.5rem;
-        }
-
-        .pricing-card .price {
-            font-size: 3.5rem;
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-color);
-            margin: 20px 0;
-            display: block;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
-
-        .pricing-card .price span {
-            font-size: 1rem;
-            color: var(--text-sec);
-            opacity: 0.7;
-        }
-
-        .pricing-card ul {
-            list-style: none;
-            margin: 30px 0;
-            text-align: left;
-        }
-
-        .pricing-card ul li {
-            margin-bottom: 15px;
-            padding-left: 25px;
-            position: relative;
-            opacity: 0.8;
-        }
-
-        .pricing-card ul li::before {
-            content: '\f00c'; /* check icon */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: var(--primary-color);
-            position: absolute;
-            left: 0;
-        }
-
-        /* --- Mascot Section --- */
-        .mascot-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 50px;
-        }
-
-        .mascot-image img {
-            max-width: 100%;
-            filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.5));
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .mascot-text h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        /* --- CEO Section --- */
-        .ceo-content {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr; /* Text takes more space */
-            align-items: center;
-            gap: 50px;
-        }
-
-        .ceo-image {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .ceo-image img {
-            width: 100%;
-            border-radius: 15px;
-            filter: grayscale(50%) contrast(1.1);
-            border: 2px solid var(--glass-border);
-            transition: all 0.4s ease;
-        }
-
-        .ceo-image img:hover {
-            filter: grayscale(0%) contrast(1);
-            border-color: var(--primary-color);
-            box-shadow: var(--glow);
-        }
-
-        .ceo-text h4 {
-            font-size: 1rem;
-            margin-bottom: 20px;
-            color: var(--text-sec);
-            opacity: 0.7;
-            text-transform: none;
-            letter-spacing: 1px;
-        }
-
-
-        /* --- Results (Numbers) --- */
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            text-align: center;
-        }
-
-        .stat-box {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .stat-box h2 {
-            font-size: 4rem;
-            color: var(--primary-color);
-            text-shadow: 0 0 20px var(--primary-color);
-        }
-
-        /* --- Forms --- */
-        form {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        input, textarea, select {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid #333;
-            padding: 15px;
-            color: white;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
-        }
-
-        /* --- Footer --- */
-        footer {
-            background: transparent;
-            padding: 40px 10%;
-            border-top: 1px solid var(--glass-border);
-            text-align: center;
-        }
-
-        .footer-dots {
-            color: var(--primary-color);
-            font-size: 2rem;
-            letter-spacing: 10px;
-            margin-bottom: 20px;
-            text-shadow: var(--glow);
-        }
-
-
-        .copyright {
-            margin-top: 30px;
-            color: #444;
-            font-size: 0.8rem;
-        }
-
-        /* --- Tools Carousel --- */
-        #tools {
-            padding: 100px 0;
-        }
-
-        .tools-carousel {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
-        }
-
-        .tools-track {
-            display: flex;
-            width: calc(250px * 18); /* 250px per item * 9 items * 2 for loop */
-            animation: scroll 40s linear infinite;
-        }
-
-        .tool-logo {
-            width: 250px;
-            text-align: center;
-            font-size: 4rem;
-            color: #666;
-            transition: all 0.3s ease;
-        }
-
-        .tool-logo:hover {
-            color: var(--primary-color);
-            transform: scale(1.1);
-            text-shadow: var(--glow);
-        }
-
-        .tool-logo i {
-            margin-bottom: 10px;
-        }
-
-        @keyframes scroll {
-            from {
-                transform: translateX(0);
-            }
-            to {
-                transform: translateX(calc(-250px * 9)); /* Half the track width */
-            }
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(2px, 9999px, 5px, 0); }
-            20% { clip: rect(25px, 9999px, 30px, 0); }
-            40% { clip: rect(10px, 9999px, 15px, 0); }
-            60% { clip: rect(18px, 9999px, 22px, 0); }
-            80% { clip: rect(5px, 9999px, 12px, 0); }
-            100% { clip: rect(28px, 9999px, 32px, 0); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(20px, 9999px, 25px, 0); }
-            20% { clip: rect(5px, 9999px, 10px, 0); }
-            40% { clip: rect(28px, 9999px, 32px, 0); }
-            60% { clip: rect(12px, 9999px, 18px, 0); }
-            80% { clip: rect(22px, 9999px, 26px, 0); }
-            100% { clip: rect(2px, 9999px, 8px, 0); }
-        }
-
-        /* --- FAQ / AI Assistant --- */
-        .faq-accordion .faq-item {
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .faq-question {
-            width: 100%;
-            background: none;
-            border: none;
-            text-align: left;
-            padding: 25px 20px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1.1rem;
-            color: var(--text-sec);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
-        }
-
-        .faq-question:hover {
-            background: var(--glass);
-            color: var(--primary-color);
-        }
-
-        .faq-question::after {
-            content: '\f067'; /* Font Awesome Plus Icon */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            transition: transform 0.4s ease;
-        }
-
-        .faq-item.active .faq-question::after {
-            transform: rotate(45deg);
-        }
-
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 300px; /* Adjust as needed */
-            transition: max-height 1s ease-in-out;
-        }
-
-        .faq-answer p {
-            padding: 0 20px 25px;
-            line-height: 1.7;
-            opacity: 0.8;
-        }
-
-        /* --- Floating WhatsApp Button --- */
-        .whatsapp-float {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 40px;
-            right: 40px;
-            background-color: #25d366;
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            animation: pulse-whatsapp 2s infinite;
-        }
-
-        @keyframes pulse-whatsapp {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 1024px) {
-            .nav-links { display: none; } /* Simplified for demo */
-            .hero-title { font-size: 2.5rem; }
-            .mascot-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .ceo-content {
-                grid-template-columns: 1fr;
-            }
-            .ceo-image {
-                order: -1; /* Image comes first on mobile */
-                margin-bottom: 30px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            section {
-                padding: 80px 5%;
-            }
-            nav {
-                padding: 15px 20px;
-            }
-            .hero-title {
-                font-size: 2rem;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
-            .whatsapp-float {
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
-                bottom: 20px;
-                right: 20px;
-            }
-        }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
     <!-- Preloader -->
     <div id="preloader">
-        <div class="preloader-logo">ZANDRIX</div>
+        <div class="loader"></div>
     </div>
 
-    <audio id="ambient-sound" src="https://cdn.pixabay.com/download/audio/2022/10/23/audio_841a60f518.mp3" loop></audio>
-    <!-- 3D Background -->
-    <div id="canvas-container"></div>
+    <!-- Header / Navbar -->
+    <header class="fixed w-full top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <!-- Usando o link direto da imagem extraído do Imgur -->
+                <img src="https://i.imgur.com/w28Wu0f.png" alt="Zandrix Logo" class="h-10 w-auto group-hover:drop-shadow-[0_0_10px_rgba(139,92,246,0.8)] transition-all">
+                <span class="text-xl font-bold tracking-widest brand-font text-white group-hover:text-zandrix-accent transition-colors">ZANDRIX</span>
+            </a>
 
-    <!-- Menu Principal -->
-    <nav>
-        <a href="#home" class="nav-logo" data-text="ZANDRIX">ZANDRIX</a>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">Sobre</a></li>
-            <li><a href="#mascot">Mascote</a></li>
-            <li><a href="#services">Serviços</a></li>
-            <li><a href="#pricing">Planos</a></li>
-            <li><a href="#solutions">Soluções</a></li>
-            <li><a href="#process">Processo</a></li>
-            <li><a href="#clients">Clientes</a></li>
-            <li><a href="#tech">Tecnologia</a></li>
-            <li><a href="#blog">Blog</a></li>
-            <li><a href="#contact">Contato</a></li>
-        </ul>
-        <a href="https://wa.me/5533998154570" class="btn-cta">WhatsApp</a>
-    </nav>
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#solucoes" class="hover:text-zandrix-primary transition-colors">Soluções</a>
+                <a href="#diferenciais" class="hover:text-zandrix-primary transition-colors">Diferenciais</a>
+                <a href="#especialista" class="hover:text-zandrix-primary transition-colors">Quem Somos</a>
+                <a href="#contato" class="hover:text-zandrix-primary transition-colors">Contato</a>
+                <a href="#faq" class="hover:text-zandrix-primary transition-colors">FAQ</a>
+            </nav>
 
-    <!-- PÁGINA 1: HOME -->
-    <section id="home">
-        <div id="hero-logo-container"></div> <!-- 3D Logo Mount Point -->
-        <h1 class="hero-title">Desenvolvemos Sites e SaaS<br>de Alta Performance.</h1>
-        <p class="hero-subtitle" id="typewriter"></p>
-        <div class="hero-buttons">
-            <a href="#quote" class="btn-primary">Orçar Site ou SaaS</a>
-            <a href="https://wa.me/5533998154570" class="btn-cta" style="color:white; border-color:white;">Falar no WhatsApp</a>
+            <!-- CTA Button -->
+            <a href="https://wa.me/5533998154570" target="_blank" class="hidden md:inline-flex items-center gap-2 bg-zandrix-primary hover:bg-violet-700 text-white px-6 py-2 rounded-full font-bold transition-all shadow-neon hover:shadow-neon-hover transform hover:-translate-y-1">
+                <span>Falar no WhatsApp</span>
+                <i class="fab fa-whatsapp"></i>
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-white text-2xl focus:outline-none hover:text-zandrix-primary transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-    </section>
 
-    <!-- PÁGINA 2: SOBRE -->
-    <section id="about">
-        <h2 class="section-title">Sobre a Zandrix</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>Missão</h3>
-                <p>Elevar o padrão de Sites e SaaS no Brasil através de design futurista e performance extrema.</p>
-            </div>
-            <div class="card">
-                <h3>Visão</h3>
-                <p>Ser a referência número 1 em desenvolvimento de Sites e SaaS na América Latina.</p>
-            </div>
-            <div class="card">
-                <h3>Valores</h3>
-                <p>Inovação constante, transparência radical e obsessão pela qualidade.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PÁGINA NOVA: CEO -->
-    <section id="ceo">
-        <h2 class="section-title">Uma Mensagem do CEO</h2>
-        <div class="ceo-content">
-            <div class="ceo-text card" style="cursor: default;">
-                <h3>Richard M.</h3>
-                <h4>Fundador & CEO</h4>
-                <p>“Desde o início da minha jornada no marketing digital, minha obsessão sempre foi a mesma: quebrar o padrão. A Zandrix nasceu dessa visão. Não estamos aqui para criar apenas Sites e SaaS, mas para construir fortalezas digitais que impulsionam marcas para o futuro.”</p>
-                <p>“Acredito que a combinação de tecnologia de ponta e design arrojado é a chave para a autoridade no mercado. Conecte-se comigo e vamos juntos elevar o nível da sua presença online.”</p>
-                <a href="https://instagram.com/eu.richardmkt" target="_blank" class="btn-cta" style="margin-top: 20px; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fab fa-instagram"></i> @eu.richardmkt
+        <!-- Mobile Menu (Dropdown) -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-xl border-b border-white/10 p-6 shadow-2xl transition-all">
+            <div class="flex flex-col space-y-4 text-center">
+                <a href="#solucoes" class="text-white hover:text-zandrix-primary text-lg font-medium py-2 border-b border-white/5" onclick="toggleMobileMenu()">Soluções</a>
+                <a href="#diferenciais" class="text-white hover:text-zandrix-primary text-lg font-medium py-2 border-b border-white/5" onclick="toggleMobileMenu()">Diferenciais</a>
+                <a href="#especialista" class="text-white hover:text-zandrix-primary text-lg font-medium py-2 border-b border-white/5" onclick="toggleMobileMenu()">Quem Somos</a>
+                <a href="#contato" class="text-white hover:text-zandrix-primary text-lg font-medium py-2 border-b border-white/5" onclick="toggleMobileMenu()">Contato</a>
+                <a href="#faq" class="text-white hover:text-zandrix-primary text-lg font-medium py-2 border-b border-white/5" onclick="toggleMobileMenu()">FAQ</a>
+                <a href="https://wa.me/5533998154570" target="_blank" class="bg-zandrix-primary text-white py-3 rounded-full font-bold shadow-neon mt-2 flex justify-center items-center gap-2" onclick="toggleMobileMenu()">
+                    WhatsApp <i class="fab fa-whatsapp"></i>
                 </a>
             </div>
-            <div class="ceo-image">
-                <img src="https://i.imgur.com/hQ3oFl8.png" alt="Richard, CEO da Zandrix">
+        </div>
+    </header>
+
+    <!-- Seção 1: Hero (Cabeçalho de Impacto) -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Background Gradient Mesh -->
+        <div class="absolute inset-0 bg-gradient-radial pointer-events-none"></div>
+        <!-- Grid Pattern (Novo) -->
+        <div class="absolute inset-0 bg-grid-pattern z-0"></div>
+        
+        <!-- Canvas de Partículas Interativas -->
+        <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-0 opacity-60"></canvas>
+
+        <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            <!-- Texto -->
+            <div data-aos="fade-right" data-aos-duration="1000">
+                <span class="inline-block py-1 px-3 rounded-full bg-zandrix-primary/10 border border-zandrix-primary/30 text-zandrix-accent text-xs font-bold tracking-wider mb-6 shadow-[0_0_15px_rgba(124,58,237,0.3)]">
+                    INOVAÇÃO DIGITAL & SAAS
+                </span>
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                    <span class="animate-shine">Transformamos sua ideia em</span> <br><span id="typed-text" class="text-zandrix-primary drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]"></span>
+                </h1>
+                <p class="text-gray-400 text-lg mb-6 leading-relaxed max-w-lg">
+                    Da criação de sites institucionais ao desenvolvimento de SaaS complexos. A Zandrix une design futurista e tecnologia de ponta para escalar seu negócio.
+                </p>
+                
+                <div class="flex flex-wrap gap-x-6 gap-y-2 text-gray-300 text-sm mb-8">
+                    <span class="flex items-center gap-2"><i class="fas fa-check-circle text-zandrix-primary"></i>Design profissional</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-check-circle text-zandrix-primary"></i>Carregamento rápido</span>
+                    <span class="flex items-center gap-2"><i class="fas fa-check-circle text-zandrix-primary"></i>Estrutura pensada para conversão</span>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-6">
+                    <a href="https://wa.me/5533998154570" target="_blank" class="group relative inline-flex justify-center items-center gap-3 px-8 py-4 font-bold text-white transition-all duration-300 bg-gradient-to-r from-zandrix-primary to-violet-900 rounded-full hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] hover:-translate-y-1 overflow-hidden">
+                        <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-violet-500 to-fuchsia-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"></span>
+                        <span class="relative flex items-center gap-2">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                            Começar Projeto
+                        </span>
+                    </a>
+                    <a href="#projetos" class="group inline-flex justify-center items-center gap-3 px-8 py-4 font-bold text-white transition-all duration-300 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 hover:border-zandrix-primary/50 backdrop-blur-sm">
+                        <span>Ver Projetos</span>
+                        <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform text-zandrix-primary"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Visual / Mascote -->
+            <div class="relative flex justify-center lg:justify-end" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                <div class="relative w-full max-w-lg">
+                    <!-- Glow Effect -->
+                    <div class="absolute top-0 -right-4 w-72 h-72 bg-zandrix-primary/30 rounded-full blur-3xl filter opacity-50 animate-pulse"></div>
+
+                    <!-- Main Card (Glassmorphism Mockup) -->
+                    <div class="relative bg-zandrix-card/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 shadow-2xl z-10 transform transition duration-500" data-tilt data-tilt-max="5">
+                        <!-- Browser Header with Address Bar -->
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80 shadow-[0_0_8px_rgba(234,179,8,0.6)]"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                            </div>
+                            <div class="flex-1 bg-black/50 rounded-lg h-8 flex items-center px-4 border border-white/5 shadow-inner">
+                                <i class="fas fa-lock text-[10px] text-green-500 mr-2"></i>
+                                <span class="text-xs text-gray-400 font-mono tracking-wide">https://<span class="text-white">www.seusite.com.br</span></span>
+                            </div>
+                        </div>
+                        <!-- Content Simulation -->
+                        <div class="space-y-4">
+                            <!-- Navbar Sim -->
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="h-4 w-16 bg-white/10 rounded"></div>
+                                <div class="flex gap-2">
+                                    <div class="h-4 w-8 bg-white/5 rounded"></div>
+                                    <div class="h-4 w-8 bg-white/5 rounded"></div>
+                                    <div class="h-4 w-12 bg-zandrix-primary/50 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex-1 space-y-3">
+                                    <div class="h-6 bg-white/20 rounded w-3/4 animate-pulse"></div>
+                                    <div class="h-4 bg-white/10 rounded w-full"></div>
+                                    <div class="h-4 bg-white/10 rounded w-5/6"></div>
+                                    <div class="flex gap-2 mt-2">
+                                        <div class="h-8 w-24 bg-zandrix-primary rounded shadow-neon"></div>
+                                    </div>
+                                </div>
+                                <div class="h-28 w-24 bg-gradient-to-br from-zandrix-primary/20 to-transparent rounded-lg border border-white/5 relative overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 right-0 h-12 bg-zandrix-primary/10" style="clip-path: polygon(0 100%, 0 40%, 100% 20%, 100% 100%);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge 1: SEO -->
+                    <div class="absolute -top-6 -left-6 bg-zandrix-dark/90 backdrop-blur-md border border-zandrix-primary/30 p-4 rounded-xl shadow-neon flex items-center gap-3 animate-[float_4s_ease-in-out_infinite] z-20">
+                        <div class="bg-green-500/20 p-2 rounded-lg text-green-400"><i class="fas fa-search"></i></div>
+                        <div>
+                            <div class="text-xs text-gray-400">SEO Score</div>
+                            <div class="font-bold text-white">100/100</div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Badge 2: Analytics -->
+                    <div class="absolute -bottom-8 -right-4 bg-zandrix-dark/90 backdrop-blur-md border border-zandrix-primary/30 p-4 rounded-xl shadow-neon flex items-center gap-3 animate-[float_5s_ease-in-out_infinite] delay-700 z-20">
+                        <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400"><i class="fas fa-chart-line"></i></div>
+                        <div>
+                            <div class="text-xs text-gray-400">Conversão</div>
+                            <div class="font-bold text-white">+240%</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA NOVA: MASCOTE -->
-    <section id="mascot">
-        <h2 class="section-title">Conheça o Zandy</h2>
-        <div class="mascot-content">
-            <div class="mascot-image">
-                <img src="https://i.imgur.com/YETeQ7m.png" alt="Zandy, o Mascote da Zandrix">
-            </div>
-            <div class="mascot-text card" style="cursor: default;">
-                <h3>Olá, eu sou o Zandy!</h3>
-                <p>Seu guia no universo digital da Zandrix. Sou uma inteligência artificial criada para representar a inovação, a velocidade e a criatividade que colocamos em cada projeto.</p>
-                <p>Estou aqui para te ajudar a navegar pelo futuro da web e garantir que sua experiência seja nada menos que extraordinária. Vamos construir algo incrível juntos!</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PÁGINA 3: SERVIÇOS -->
-    <section id="services">
-        <h2 class="section-title">Nossos Serviços</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>Criação de Sites</h3>
-                <p>Sites institucionais com design exclusivo e código limpo.</p>
-            </div>
-            <div class="card">
-                <h3>Landing Pages</h3>
-                <p>Páginas de alta conversão focadas em vendas.</p>
-            </div>
-            <div class="card">
-                <h3>E-commerce</h3>
-                <p>Lojas virtuais robustas e seguras.</p>
-            </div>
-            <div class="card">
-                <h3>SEO Avançado</h3>
-                <p>Otimização para aparecer no topo do Google.</p>
-            </div>
-            <div class="card">
-                <h3>SaaS & Web Apps</h3>
-                <p>Desenvolvimento de softwares na nuvem, dashboards e sistemas complexos.</p>
+    <!-- NOVA SEÇÃO: MARQUEE INFINITO (Faixa de Texto) -->
+    <section class="py-6 bg-zandrix-primary/5 border-y border-white/5 overflow-hidden">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <!-- Repetindo palavras chaves para o efeito infinito -->
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">HIGH PERFORMANCE</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">UI/UX DESIGN</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">SAAS DEVELOPMENT</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">GROWTH STRATEGY</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <!-- Duplicata para o loop -->
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">HIGH PERFORMANCE</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">UI/UX DESIGN</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">SAAS DEVELOPMENT</span>
+                <span class="text-4xl font-bold text-zandrix-primary mx-4">•</span>
+                <span class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white/20 to-white/5 mx-8 brand-font">GROWTH STRATEGY</span>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA NOVA: PLANOS E PREÇOS -->
-    <section id="pricing">
-        <h2 class="section-title">Nossos Planos</h2>
-        <div class="grid-container">
-            <!-- Plano Essencial -->
-            <div class="card pricing-card">
-                <h3>Site Essencial</h3>
-                <div class="price">R$100<span>/mês</span></div>
-                <ul>
-                    <li>Landing Page Simples</li>
-                    <li>Design Responsivo</li>
-                    <li>Formulário de Contato</li>
-                    <li>Suporte Básico</li>
-                </ul>
-                <a href="#quote" class="btn-cta">Contratar</a>
+    <!-- Seção 2: Soluções -->
+    <section id="solucoes" class="py-24 bg-zandrix-card/50 relative">
+        <div class="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none"></div>
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-zandrix-accent to-white drop-shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+                    O que fazemos
+                </h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Soluções completas para posicionar sua marca no topo.</p>
             </div>
-            <!-- Plano Padrão (Destaque) -->
-            <div class="card pricing-card highlighted">
-                <h3>Site Padrão</h3>
-                <div class="price">R$150<span>/mês</span></div>
-                <ul>
-                    <li>Site Institucional (5 pág.)</li>
-                    <li>Design Personalizado</li>
-                    <li>SEO Básico</li>
-                    <li>Suporte Prioritário</li>
-                </ul>
-                <a href="#quote" class="btn-primary" style="width: 100%; border: none;">Contratar</a>
-            </div>
-            <!-- Plano Premium -->
-            <div class="card pricing-card">
-                <h3>Site Premium</h3>
-                <div class="price">R$200<span>/mês</span></div>
-                <ul>
-                    <li>Site Completo ou E-commerce</li>
-                    <li>Design com Animações 3D</li>
-                    <li>SEO Avançado</li>
-                    <li>Suporte Premium 24/7</li>
-                </ul>
-                <a href="#quote" class="btn-cta">Contratar</a>
-            </div>
-            <!-- Plano SaaS MVP -->
-            <div class="card pricing-card">
-                <h3>SaaS MVP</h3>
-                <div class="price">R$100<span>/mês</span></div>
-                <ul>
-                    <li>MVP Funcional (1 Módulo)</li>
-                    <li>Dashboard Simples</li>
-                    <li>Autenticação de Usuários</li>
-                    <li>Suporte Básico</li>
-                </ul>
-                <a href="#quote" class="btn-cta">Contratar</a>
-            </div>
-            <!-- Plano SaaS Startup (Destaque) -->
-            <div class="card pricing-card highlighted">
-                <h3>SaaS Startup</h3>
-                <div class="price">R$150<span>/mês</span></div>
-                <ul>
-                    <li>Sistema Completo (5 Módulos)</li>
-                    <li>Dashboard Analítico</li>
-                    <li>Integração com Pagamentos</li>
-                    <li>Suporte Prioritário</li>
-                </ul>
-                <a href="#quote" class="btn-primary" style="width: 100%; border: none;">Contratar</a>
-            </div>
-            <!-- Plano SaaS Scale -->
-            <div class="card pricing-card">
-                <h3>SaaS Scale</h3>
-                <div class="price">R$200<span>/mês</span></div>
-                <ul>
-                    <li>Arquitetura Escalável</li>
-                    <li>Módulos Ilimitados</li>
-                    <li>API para Integrações</li>
-                    <li>Suporte Premium 24/7</li>
-                </ul>
-                <a href="#quote" class="btn-cta">Contratar</a>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="group bg-zandrix-dark border border-white/5 p-8 rounded-2xl hover:border-zandrix-primary/50 transition-all duration-300 hover:shadow-neon" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="0">
+                    <div class="h-12 w-12 bg-zandrix-primary/20 rounded-lg flex items-center justify-center text-zandrix-primary mb-6 group-hover:bg-zandrix-primary group-hover:text-white transition-colors">
+                        <i class="fas fa-globe text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Sites Institucionais</h3>
+                    <p class="text-gray-400 text-sm">Design exclusivo com foco total em autoridade e posicionamento de marca.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-zandrix-dark border border-white/5 p-8 rounded-2xl hover:border-zandrix-primary/50 transition-all duration-300 hover:shadow-neon" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-12 w-12 bg-zandrix-primary/20 rounded-lg flex items-center justify-center text-zandrix-primary mb-6 group-hover:bg-zandrix-primary group-hover:text-white transition-colors">
+                        <i class="fas fa-rocket text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Landing Pages</h3>
+                    <p class="text-gray-400 text-sm">Páginas de alta conversão focadas em transformar visitantes em clientes pagantes.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-zandrix-dark border border-white/5 p-8 rounded-2xl hover:border-zandrix-primary/50 transition-all duration-300 hover:shadow-neon" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-12 w-12 bg-zandrix-primary/20 rounded-lg flex items-center justify-center text-zandrix-primary mb-6 group-hover:bg-zandrix-primary group-hover:text-white transition-colors">
+                        <i class="fas fa-code text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">SaaS Development</h3>
+                    <p class="text-gray-400 text-sm">Sistemas complexos e sob medida desenvolvidos para escalar o seu modelo de negócio.</p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="group bg-zandrix-dark border border-white/5 p-8 rounded-2xl hover:border-zandrix-primary/50 transition-all duration-300 hover:shadow-neon" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-12 w-12 bg-zandrix-primary/20 rounded-lg flex items-center justify-center text-zandrix-primary mb-6 group-hover:bg-zandrix-primary group-hover:text-white transition-colors">
+                        <i class="fas fa-paint-brush text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">UI/UX Design</h3>
+                    <p class="text-gray-400 text-sm">Interfaces modernas, intuitivas e desenhadas para a melhor experiência do usuário.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA 4: SOLUÇÕES -->
-    <section id="solutions">
-        <h2 class="section-title">Soluções Digitais</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>Para Empresas</h3>
-                <p>Consolide sua marca no mercado corporativo.</p>
+    <!-- Seção 3: Diferenciais -->
+    <section id="diferenciais" class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6" data-aos="fade-right">
+                <div class="p-6 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-xl">
+                    <i class="fas fa-bolt text-zandrix-accent text-3xl mb-4"></i>
+                    <h4 class="text-lg font-bold mb-2">Velocidade Extrema</h4>
+                    <p class="text-gray-400 text-sm">Sites otimizados para carregar em milissegundos.</p>
+                </div>
+                <div class="p-6 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-xl">
+                    <i class="fas fa-vr-cardboard text-zandrix-accent text-3xl mb-4"></i>
+                    <h4 class="text-lg font-bold mb-2">Design Futurista</h4>
+                    <p class="text-gray-400 text-sm">Identidade visual que te coloca à frente da concorrência.</p>
+                </div>
+                <div class="p-6 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-xl">
+                    <i class="fas fa-bullseye text-zandrix-accent text-3xl mb-4"></i>
+                    <h4 class="text-lg font-bold mb-2">Foco em Conversão</h4>
+                    <p class="text-gray-400 text-sm">Cada pixel é pensado para gerar leads ou vendas.</p>
+                </div>
+                <div class="p-6 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-xl">
+                    <i class="fas fa-headset text-zandrix-accent text-3xl mb-4"></i>
+                    <h4 class="text-lg font-bold mb-2">Suporte Expert</h4>
+                    <p class="text-gray-400 text-sm">Acompanhamento direto com quem entende de código.</p>
+                </div>
             </div>
-            <div class="card">
-                <h3>Para Profissionais</h3>
-                <p>Portfólios e sites pessoais que geram autoridade.</p>
-            </div>
-            <div class="card">
-                <h3>Negócios Locais</h3>
-                <p>Atraia clientes da sua região com Google Maps e SEO local.</p>
-            </div>
-            <div class="card">
-                <h3>Startups</h3>
-                <p>Criação de MVPs e produtos digitais prontos para escalar e receber investimento.</p>
+
+            <div data-aos="fade-left">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Por que escolher a <span class="text-zandrix-primary">Zandrix?</span></h2>
+                <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                    Não entregamos apenas "sites". Entregamos ferramentas de negócios. Em um mundo digital saturado, ter uma presença comum é ser invisível. A Zandrix garante que você seja visto, lembrado e escolhido.
+                </p>
+                <a href="https://wa.me/5533998154570" class="text-zandrix-accent font-bold hover:text-white transition-colors flex items-center gap-2 group">
+                    Fale com nosso time
+                    <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: PROCESSO -->
-    <section id="process">
-        <h2 class="section-title">Nosso Processo</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>1. Imersão</h3>
-                <p>Mergulhamos no seu negócio para entender sua essência e objetivos.</p>
-            </div>
-            <div class="card">
-                <h3>2. Arquitetura</h3>
-                <p>Planejamos a estrutura ideal para conversão e experiência do usuário.</p>
-            </div>
-            <div class="card">
-                <h3>3. Desenvolvimento</h3>
-                <p>Codificação limpa, rápida e otimizada com tecnologias de ponta.</p>
-            </div>
-            <div class="card">
-                <h3>4. Lançamento</h3>
-                <p>Testes rigorosos e deploy em servidores de alta performance.</p>
+    <!-- Seção 4: O Especialista -->
+    <section id="especialista" class="py-24 bg-black relative border-y border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="bg-gradient-to-r from-zandrix-card to-black p-8 md:p-12 rounded-3xl border border-white/10 flex flex-col md:flex-row items-center gap-10 max-w-5xl mx-auto" data-aos="zoom-in">
+                
+                <!-- Imagem do Richard -->
+                <div class="relative shrink-0">
+                    <div class="absolute inset-0 bg-zandrix-primary rounded-full blur-xl opacity-50"></div>
+                    <img src="https://i.imgur.com/nU83Egc.png" alt="Richard Fundador Zandrix" class="relative w-40 h-40 md:w-56 md:h-56 rounded-full object-cover border-4 border-zandrix-primary/50 shadow-neon">
+                </div>
+
+                <div class="text-center md:text-left">
+                    <p class="text-zandrix-accent font-bold tracking-widest text-sm mb-2">O ESPECIALISTA</p>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Liderada por <a href="https://instagram.com/eu.richardmkt" target="_blank" class="text-white underline decoration-zandrix-primary">@eu.richardmkt</a></h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        A Zandrix combina expertise em marketing e desenvolvimento full-stack para entregar soluções que realmente funcionam. Não usamos templates prontos; construímos a arquitetura digital que o seu negócio precisa para escalar.
+                    </p>
+                    <div class="flex items-center justify-center md:justify-start gap-4">
+                        <span class="text-sm font-bold text-white bg-white/10 px-3 py-1 rounded">Dev SaaS</span>
+                        <span class="text-sm font-bold text-white bg-white/10 px-3 py-1 rounded">Marketing</span>
+                        <span class="text-sm font-bold text-white bg-white/10 px-3 py-1 rounded">Estratégia</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: DIFERENCIAIS -->
-    <section id="differentials">
-        <h2 class="section-title">Por que a Zandrix?</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>Velocidade Extrema</h3>
-                <p>Sites e SaaS otimizados que carregam em milissegundos.</p>
+    <!-- NOVA SEÇÃO: PROCESSO (COMO TRABALHAMOS) -->
+    <section class="py-24 bg-zandrix-dark relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zandrix-primary/50 to-transparent"></div>
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-zandrix-primary font-bold tracking-widest text-sm mb-2 block">METHODOLOGY</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Nosso Processo</h2>
             </div>
-            <div class="card">
-                <h3>Design Futurista</h3>
-                <p>Visual único que destaca sua marca da concorrência.</p>
-            </div>
-            <div class="card">
-                <h3>Suporte Premium</h3>
-                <p>Atendimento rápido e humanizado via WhatsApp.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="relative p-6 border border-white/5 rounded-2xl bg-gradient-to-b from-white/5 to-transparent hover:border-zandrix-primary/30 transition-all group" data-aos="fade-up" data-aos-delay="0">
+                    <div class="text-5xl font-bold text-white/5 absolute top-4 right-4 group-hover:text-zandrix-primary/10 transition-colors">01</div>
+                    <div class="w-12 h-12 rounded-full bg-zandrix-primary/20 flex items-center justify-center text-zandrix-primary mb-4 shadow-neon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Imersão</h3>
+                    <p class="text-sm text-gray-400">Analisamos seu mercado e definimos a arquitetura ideal.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative p-6 border border-white/5 rounded-2xl bg-gradient-to-b from-white/5 to-transparent hover:border-zandrix-primary/30 transition-all group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="text-5xl font-bold text-white/5 absolute top-4 right-4 group-hover:text-zandrix-primary/10 transition-colors">02</div>
+                    <div class="w-12 h-12 rounded-full bg-zandrix-primary/20 flex items-center justify-center text-zandrix-primary mb-4 shadow-neon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Design</h3>
+                    <p class="text-sm text-gray-400">Criamos o visual futurista e a experiência do usuário (UX).</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative p-6 border border-white/5 rounded-2xl bg-gradient-to-b from-white/5 to-transparent hover:border-zandrix-primary/30 transition-all group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="text-5xl font-bold text-white/5 absolute top-4 right-4 group-hover:text-zandrix-primary/10 transition-colors">03</div>
+                    <div class="w-12 h-12 rounded-full bg-zandrix-primary/20 flex items-center justify-center text-zandrix-primary mb-4 shadow-neon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Dev</h3>
+                    <p class="text-sm text-gray-400">Codificação limpa, rápida e otimizada para SEO.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="relative p-6 border border-white/5 rounded-2xl bg-gradient-to-b from-white/5 to-transparent hover:border-zandrix-primary/30 transition-all group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="text-5xl font-bold text-white/5 absolute top-4 right-4 group-hover:text-zandrix-primary/10 transition-colors">04</div>
+                    <div class="w-12 h-12 rounded-full bg-zandrix-primary/20 flex items-center justify-center text-zandrix-primary mb-4 shadow-neon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Launch</h3>
+                    <p class="text-sm text-gray-400">Testes finais e lançamento oficial do seu ecossistema.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA 6: FERRAMENTAS (CARROSSEL) -->
-    <section id="tools">
-        <h2 class="section-title">Tecnologias que Dominamos</h2>
-        <div class="tools-carousel">
-            <div class="tools-track">
-                <!-- Logos appear twice for seamless loop -->
-                <div class="tool-logo"><i class="fab fa-react"></i></div>
-                <div class="tool-logo"><i class="fab fa-node-js"></i></div>
-                <div class="tool-logo"><i class="fab fa-python"></i></div>
-                <div class="tool-logo"><i class="fab fa-aws"></i></div>
-                <div class="tool-logo"><i class="fab fa-html5"></i></div>
-                <div class="tool-logo"><i class="fab fa-css3-alt"></i></div>
-                <div class="tool-logo"><i class="fab fa-js-square"></i></div>
-                <div class="tool-logo"><i class="fab fa-git-alt"></i></div>
-                <div class="tool-logo"><i class="fab fa-docker"></i></div>
-                <!-- Duplicate set -->
-                <div class="tool-logo"><i class="fab fa-react"></i></div>
-                <div class="tool-logo"><i class="fab fa-node-js"></i></div>
-                <div class="tool-logo"><i class="fab fa-python"></i></div>
-                <div class="tool-logo"><i class="fab fa-aws"></i></div>
-                <div class="tool-logo"><i class="fab fa-html5"></i></div>
-                <div class="tool-logo"><i class="fab fa-css3-alt"></i></div>
-                <div class="tool-logo"><i class="fab fa-js-square"></i></div>
-                <div class="tool-logo"><i class="fab fa-git-alt"></i></div>
-                <div class="tool-logo"><i class="fab fa-docker"></i></div>
+    <!-- NOVA SEÇÃO: PLANOS (PREÇOS) -->
+    <section id="planos" class="py-24 bg-black relative border-y border-white/5">
+        <div class="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-zandrix-primary font-bold tracking-widest text-sm mb-2 block">INVESTIMENTO</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Planos Flexíveis</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Sites de Alta Performance ou SaaS. O preço é o mesmo, a qualidade é Zandrix.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Plano Essencial -->
+                <div class="group relative p-8 border border-white/10 rounded-2xl bg-zandrix-card hover:border-zandrix-primary/50 transition-all duration-300" data-aos="fade-up" data-aos-delay="0">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gray-700 to-transparent group-hover:via-zandrix-primary transition-all"></div>
+                    <h3 class="text-xl font-bold text-gray-300 mb-2">Essencial</h3>
+                    <div class="text-4xl font-bold text-white mb-6">R$ 100<span class="text-sm text-gray-500 font-normal">/mês</span></div>
+                    <p class="text-sm text-gray-400 mb-6">Para quem está começando e precisa de presença digital rápida.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Site Institucional ou MVP</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Design Responsivo</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Hospedagem Inclusa</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Suporte Básico</li>
+                    </ul>
+                    <a href="https://wa.me/5533998154570?text=Tenho%20interesse%20no%20Plano%20Essencial" target="_blank" class="block w-full py-3 text-center border border-white/20 rounded-lg hover:bg-white hover:text-black transition-all font-bold">Escolher Essencial</a>
+                </div>
+
+                <!-- Plano Padrão -->
+                <div class="group relative p-8 border border-zandrix-primary/50 rounded-2xl bg-zandrix-dark shadow-neon transform md:-translate-y-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-zandrix-primary via-zandrix-accent to-zandrix-primary"></div>
+                    <div class="absolute top-4 right-4 bg-zandrix-primary text-white text-xs font-bold px-2 py-1 rounded">MAIS VENDIDO</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Padrão</h3>
+                    <div class="text-5xl font-bold text-zandrix-primary mb-6">R$ 150<span class="text-sm text-gray-500 font-normal">/mês</span></div>
+                    <p class="text-sm text-gray-400 mb-6">Ideal para empresas que buscam crescimento e autoridade.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Site Pro ou SaaS Completo</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Painel Administrativo</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Otimização SEO (Google)</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Suporte Prioritário</li>
+                    </ul>
+                    <a href="https://wa.me/5533998154570?text=Tenho%20interesse%20no%20Plano%20Padrao" target="_blank" class="block w-full py-3 text-center bg-zandrix-primary text-white rounded-lg hover:bg-violet-600 transition-all font-bold shadow-lg shadow-zandrix-primary/20">Escolher Padrão</a>
+                </div>
+
+                <!-- Plano Premium -->
+                <div class="group relative p-8 border border-white/10 rounded-2xl bg-zandrix-card hover:border-zandrix-primary/50 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gray-700 to-transparent group-hover:via-zandrix-primary transition-all"></div>
+                    <h3 class="text-xl font-bold text-gray-300 mb-2">Premium</h3>
+                    <div class="text-4xl font-bold text-white mb-6">R$ 200<span class="text-sm text-gray-500 font-normal">/mês</span></div>
+                    <p class="text-sm text-gray-400 mb-6">A solução definitiva para escalar sem limites técnicos.</p>
+                    <ul class="space-y-3 mb-8 text-sm text-gray-300">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> E-commerce ou SaaS Scale</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Design High-End / 3D</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> API & Integrações</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-zandrix-primary"></i> Suporte VIP 24/7</li>
+                    </ul>
+                    <a href="https://wa.me/5533998154570?text=Tenho%20interesse%20no%20Plano%20Premium" target="_blank" class="block w-full py-3 text-center border border-white/20 rounded-lg hover:bg-white hover:text-black transition-all font-bold">Escolher Premium</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA 7: TECNOLOGIA -->
-    <section id="tech">
-        <h2 class="section-title">Stack Tecnológico</h2>
-        <div class="grid-container">
-            <div class="card">
-                <h3>Frontend</h3>
-                <p>React, Three.js, GSAP, Next.js</p>
-            </div>
-            <div class="card">
-                <h3>Backend</h3>
-                <p>Node.js, Python, AWS Cloud</p>
-            </div>
-            <div class="card">
-                <h3>Performance</h3>
-                <p>WebP, Lazy Loading, CDN Global</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PÁGINA 8: RESULTADOS -->
-    <section id="results">
-        <h2 class="section-title">Impacto Gerado</h2>
-        <div class="stats-container">
-            <div class="stat-box">
-                <h2 id="count1">0</h2>
-                <p>Projetos Entregues</p>
-            </div>
-            <div class="stat-box">
-                <h2 id="count2">0</h2>
-                <p>Clientes Satisfeitos</p>
-            </div>
-            <div class="stat-box">
-                <h2 id="count3">0</h2>
-                <p>Anos de Inovação</p>
+    <!-- Seção: Mascote Zandy (Nova Seção Dedicada) -->
+    <section id="zandy" class="py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- Imagem do Mascote -->
+                <div class="md:w-1/2 flex justify-center order-1 md:order-1" data-aos="fade-right">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-zandrix-primary/20 blur-[80px] rounded-full"></div>
+                        <img src="https://i.imgur.com/HCZ3pSn.png" alt="Zandy Mascote" class="relative z-10 w-full max-w-md animate-[float_6s_ease-in-out_infinite] drop-shadow-2xl">
+                    </div>
+                </div>
+                <!-- Texto -->
+                <div class="md:w-1/2 order-2 md:order-2" data-aos="fade-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zandrix-primary/10 border border-zandrix-primary/30 text-zandrix-accent text-xs font-bold mb-6">
+                        <i class="fas fa-robot"></i>
+                        <span>AI ASSISTANT</span>
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-bold mb-6">Olá, eu sou o <span class="text-zandrix-primary">Zandy!</span></h2>
+                    <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                        Sou a inteligência virtual da Zandrix. Minha missão é guiar você pelo universo da inovação digital. Represento a velocidade, a precisão e a tecnologia futurista que aplicamos em cada linha de código.
+                    </p>
+                    <div class="bg-zandrix-card border border-white/5 p-6 rounded-xl hover:border-zandrix-primary/30 transition-colors">
+                        <p class="text-gray-400 italic">"Não sou apenas um mascote, sou a personificação do seu próximo nível digital. Estou aqui para garantir que sua experiência seja extraordinária."</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA 9: BLOG -->
-    <section id="blog">
-        <h2 class="section-title">Insights</h2>
-        <div class="grid-container">
-            <div class="card">
-                <span style="color: var(--primary-color); font-size: 0.8rem;">MARKETING</span>
-                <h3>Como aumentar conversão em 2024</h3>
-                <p>Estratégias avançadas de UX Design.</p>
+    <!-- Seção 5: Prova Social & Projetos (Placeholder Tecnológico) -->
+    <section id="projetos" class="py-24">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12" data-aos="fade-up">Projetos em <span class="text-zandrix-primary">High Performance</span></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Projeto Placeholder 1 -->
+                <div class="group relative bg-zandrix-card overflow-hidden rounded-xl h-64 flex items-center justify-center border border-white/5" data-aos="fade-up" data-aos-delay="0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 z-10"></div>
+                    <div class="z-20 text-center px-4">
+                        <i class="fas fa-lock text-4xl text-gray-600 mb-4 group-hover:text-zandrix-primary transition-colors"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">SaaS Financeiro (Em Dev)</h3>
+                        <p class="text-sm text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
+                            Painel administrativo complexo com React & Node.js.
+                        </p>
+                    </div>
+                    <!-- Efeito de código ao fundo (decorativo) -->
+                    <div class="absolute inset-0 opacity-10 font-mono text-xs p-4 text-left overflow-hidden text-zandrix-primary">
+                        import { useState } from 'react';<br>
+                        function App() {<br>
+                        &nbsp;&nbsp;const [data, setData] = useState(null);<br>
+                        &nbsp;&nbsp;return &lt;Dashboard /&gt;;<br>
+                        }
+                    </div>
+                </div>
+
+                <!-- Projeto Placeholder 2 -->
+                <div class="group relative bg-zandrix-card overflow-hidden rounded-xl h-64 flex items-center justify-center border border-white/5" data-aos="fade-up" data-aos-delay="100">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 z-10"></div>
+                    <div class="z-20 text-center px-4">
+                        <i class="fas fa-chart-line text-4xl text-gray-600 mb-4 group-hover:text-zandrix-primary transition-colors"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">E-commerce High-End</h3>
+                        <p class="text-sm text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
+                            Loja virtual otimizada com Next.js para SEO e performance.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="card">
-                <span style="color: var(--primary-color); font-size: 0.8rem;">TECH</span>
-                <h3>O futuro da Web 3.0</h3>
-                <p>O que esperar da internet descentralizada.</p>
+            
+            <div class="mt-12">
+                <p class="text-gray-400 italic">"Resultados técnicos que falam mais alto que logotipos."</p>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA 10: ORÇAMENTO -->
-    <section id="quote">
-        <h2 class="section-title">Solicite um Orçamento</h2>
-        <form>
-            <input type="text" placeholder="Seu Nome" required>
-            <input type="email" placeholder="Seu E-mail Corporativo" required>
-            <select>
-                <option>Tipo de Projeto</option>
-                <option>Site Institucional</option>
-                <option>E-commerce</option>
-                <option>SaaS / Web Application</option>
-                <option>Landing Page</option>
-            </select>
-            <textarea rows="5" placeholder="Detalhes do projeto..."></textarea>
-            <button type="submit" class="btn-primary" style="border:none; cursor:pointer; width:100%;">Enviar Solicitação</button>
-        </form>
-    </section>
+    <!-- NOVA SEÇÃO: DEPOIMENTOS (CARROSSEL SWIPER) -->
+    <section id="depoimentos" class="py-24 bg-black relative border-y border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-zandrix-primary font-bold tracking-widest text-sm mb-2 block">FEEDBACK</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">O que dizem nossos parceiros</h2>
+            </div>
 
-    <!-- PÁGINA 11: CONTATO -->
-    <section id="contact">
-        <h2 class="section-title">Fale Conosco</h2>
-        <div class="grid-container" style="text-align: center;">
-            <div class="card">
-                <h3>WhatsApp</h3>
-                <p>(33) 99815-4570</p>
-                <a href="https://wa.me/5533998154570" style="color: var(--primary-color);">Iniciar conversa</a>
-            </div>
-            <div class="card">
-                <h3>Instagram</h3>
-                <p>@zandrixbr</p>
-            </div>
-            <div class="card">
-                <h3>Email</h3>
-                <p>contato@zandrix.com.br</p>
+            <!-- Swiper Container -->
+            <div class="swiper mySwiper w-full pb-12" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    <!-- Slide 1 -->
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zandrix-card border border-white/10 p-8 rounded-2xl h-full hover:border-zandrix-primary/50 transition-colors flex flex-col">
+                            <div class="flex text-yellow-400 mb-4 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="text-gray-300 mb-6 flex-1 italic">"A Zandrix transformou nossa presença digital. O site novo não é apenas bonito, ele vende. Otimização de velocidade absurda."</p>
+                            <div class="flex items-center gap-4 mt-auto">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">R</div>
+                                <div><h4 class="font-bold text-white text-sm">Rafael Torres</h4><span class="text-xs text-gray-500">CEO, FinTech Sul</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zandrix-card border border-white/10 p-8 rounded-2xl h-full hover:border-zandrix-primary/50 transition-colors flex flex-col">
+                            <div class="flex text-yellow-400 mb-4 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="text-gray-300 mb-6 flex-1 italic">"Estávamos com dificuldade em escalar nosso SaaS. A equipe da Zandrix reestruturou todo o front-end. Resultado imediato."</p>
+                            <div class="flex items-center gap-4 mt-auto">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">C</div>
+                                <div><h4 class="font-bold text-white text-sm">Carla Mendez</h4><span class="text-xs text-gray-500">Founder, E-Log</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zandrix-card border border-white/10 p-8 rounded-2xl h-full hover:border-zandrix-primary/50 transition-colors flex flex-col">
+                            <div class="flex text-yellow-400 mb-4 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="text-gray-300 mb-6 flex-1 italic">"Design futurista de verdade. Eles captaram a essência da nossa marca e elevaram o nível. Recomendo demais!"</p>
+                            <div class="flex items-center gap-4 mt-auto">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">M</div>
+                                <div><h4 class="font-bold text-white text-sm">Marcos V.</h4><span class="text-xs text-gray-500">Diretor, Nexus AI</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Slide 4 -->
+                    <div class="swiper-slide h-auto">
+                        <div class="bg-zandrix-card border border-white/10 p-8 rounded-2xl h-full hover:border-zandrix-primary/50 transition-colors flex flex-col">
+                            <div class="flex text-yellow-400 mb-4 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="text-gray-300 mb-6 flex-1 italic">"Suporte incrível via WhatsApp e entrega antes do prazo. O site ficou perfeito no celular."</p>
+                            <div class="flex items-center gap-4 mt-auto">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">J</div>
+                                <div><h4 class="font-bold text-white text-sm">Julia S.</h4><span class="text-xs text-gray-500">Mkt, Studio 44</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination mt-8"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
             </div>
         </div>
     </section>
 
-    <!-- PÁGINA NOVA: ASSISTENTE VIRTUAL / FAQ -->
-    <section id="faq">
-        <h2 class="section-title">Assistente Zandrix</h2>
-        <div class="faq-accordion">
-            <!-- Perguntas sobre Serviços -->
-            <div class="faq-item">
-                <button class="faq-question">Que tipo de Sites e SaaS vocês criam?</button>
-                <div class="faq-answer"><p>Criamos sites institucionais, landing pages, e-commerces e sistemas SaaS completos na nuvem. Cada projeto é 100% personalizado.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">Vocês fazem otimização para o Google (SEO)?</button>
-                <div class="faq-answer"><p>Sim, o SEO (Search Engine Optimization) é um pilar fundamental do nosso desenvolvimento. Todos os sites são entregues com uma estrutura otimizada para os motores de busca.</p></div>
-            </div>
-            <!-- Perguntas sobre Preços -->
-            <div class="faq-item">
-                <button class="faq-question">Quanto custa criar um Site ou SaaS?</button>
-                <div class="faq-answer"><p>O valor de cada projeto varia conforme a complexidade e os recursos desejados. Entre em contato através do nosso formulário de orçamento para uma cotação precisa.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">Quais são as formas de pagamento?</button>
-                <div class="faq-answer"><p>Aceitamos PIX, transferência bancária e cartão de crédito (via link de pagamento). Oferecemos opções de parcelamento para facilitar seu investimento.</p></div>
-            </div>
-            <!-- Perguntas sobre Processo -->
-            <div class="faq-item">
-                <button class="faq-question">Qual o prazo de entrega do projeto?</button>
-                <div class="faq-answer"><p>O prazo médio varia de 20 a 45 dias, dependendo da complexidade do projeto. Uma landing page simples pode ser mais rápida, enquanto um e-commerce completo demanda mais tempo.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">Preciso ter um domínio e hospedagem?</button>
-                <div class="faq-answer"><p>Sim. O domínio (ex: suaempresa.com.br) é o seu endereço na internet e a hospedagem é o servidor onde seu Site ou SaaS fica armazenado. Podemos auxiliar você em todo o processo de aquisição.</p></div>
-            </div>
-            <!-- Perguntas sobre Tecnologia -->
-            <div class="faq-item">
-                <button class="faq-question">Meu Site/SaaS vai funcionar no celular?</button>
-                <div class="faq-answer"><p>Com certeza. Todos os nossos projetos são 100% responsivos, garantindo uma experiência perfeita em desktops, tablets e celulares.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">O que é desenvolvimento SaaS?</button>
-                <div class="faq-answer"><p>SaaS (Software as a Service) são sistemas acessados via internet, sem instalação. Desenvolvemos desde o painel administrativo até a lógica complexa do negócio na nuvem.</p></div>
-            </div>
-            <!-- Adicione mais 23+ perguntas aqui para totalizar 30+ -->
-            <div class="faq-item">
-                <button class="faq-question">O que é um site institucional?</button>
-                <div class="faq-answer"><p>É o cartão de visitas digital da sua empresa, apresentando quem você é, seus serviços, história e formas de contato para gerar credibilidade e autoridade.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">O que é uma Landing Page?</button>
-                <div class="faq-answer"><p>É uma página única, focada em uma única ação (conversão), como vender um produto, capturar um lead ou inscrever para um evento. É ideal para campanhas de marketing.</p></div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">Vocês oferecem suporte após a entrega?</button>
-                <div class="faq-answer"><p>Sim, oferecemos um período de suporte gratuito para ajustes e correções. Também temos planos de manutenção mensais para garantir que seu Site ou SaaS esteja sempre seguro e atualizado.</p></div>
-            </div>
-            <!-- ... continue adicionando até 30+ ... -->
+    <!-- NOVA SEÇÃO: CONTATO (FORMULÁRIO WHATSAPP) -->
+    <section id="contato" class="py-24 bg-zandrix-dark relative border-t border-white/5">
+        <div class="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Texto e Informações -->
+                <div data-aos="fade-right">
+                    <span class="text-zandrix-primary font-bold tracking-widest text-sm mb-2 block">VAMOS CONVERSAR?</span>
+                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Inicie seu projeto <br>agora mesmo.</h2>
+                    <p class="text-gray-400 text-lg mb-8">
+                        Preencha o formulário e você será redirecionado para o nosso WhatsApp com a mensagem pronta. Nossa equipe responderá o mais rápido possível.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-zandrix-primary/10 flex items-center justify-center text-zandrix-primary text-xl"><i class="fas fa-envelope"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">Email</h4>
+                                <p class="text-gray-400 text-sm">contato@zandrix.com.br</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-zandrix-primary/10 flex items-center justify-center text-zandrix-primary text-xl"><i class="fab fa-whatsapp"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">WhatsApp</h4>
+                                <p class="text-gray-400 text-sm">(33) 99815-4570</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Formulário -->
+                <div class="bg-zandrix-card border border-white/10 p-8 rounded-2xl shadow-2xl relative" data-aos="fade-left">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-zandrix-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <form onsubmit="sendToWhatsapp(event)" class="space-y-4 relative z-10">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-1">Seu Nome</label>
+                            <input type="text" id="contact-name" required class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-zandrix-primary focus:outline-none focus:ring-1 focus:ring-zandrix-primary transition-colors" placeholder="Ex: João Silva">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-1">Tipo de Projeto</label>
+                            <select id="contact-service" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-zandrix-primary focus:outline-none focus:ring-1 focus:ring-zandrix-primary transition-colors">
+                                <option value="Site Institucional">Site Institucional</option>
+                                <option value="Landing Page">Landing Page</option>
+                                <option value="SaaS / Sistema">SaaS / Sistema Web</option>
+                                <option value="E-commerce">E-commerce</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-1">Mensagem (Opcional)</label>
+                            <textarea id="contact-message" rows="3" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-zandrix-primary focus:outline-none focus:ring-1 focus:ring-zandrix-primary transition-colors" placeholder="Descreva brevemente sua ideia..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-zandrix-primary hover:bg-violet-700 text-white font-bold py-4 rounded-lg transition-all shadow-neon hover:shadow-neon-hover flex justify-center items-center gap-2">
+                            Enviar via WhatsApp <i class="fab fa-whatsapp"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
         </div>
     </section>
 
-    <!-- PÁGINA 12: SUPORTE -->
-    <section id="support">
-        <h2 class="section-title">Área do Cliente</h2>
-        <div class="card" style="text-align: center; max-width: 500px; margin: 0 auto;">
-            <h3>Precisa de ajuda?</h3>
-            <p>Acesse nossa base de conhecimento ou abra um ticket.</p>
-            <br>
-            <a href="#" class="btn-cta">Acessar Portal</a>
+    <!-- Seção 6: FAQ -->
+    <section id="faq" class="py-24 bg-zandrix-card/30">
+        <div class="container mx-auto px-6 max-w-3xl">
+            <h2 class="text-3xl font-bold text-center mb-12">Perguntas Frequentes</h2>
+
+            <div class="space-y-4">
+                <!-- Pergunta 1 -->
+                <div class="bg-zandrix-dark border border-white/10 rounded-lg overflow-hidden">
+                    <input type="checkbox" id="faq1" class="hidden faq-toggle">
+                    <label for="faq1" class="flex justify-between items-center p-6 cursor-pointer hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">Quais tecnologias vocês utilizam?</span>
+                        <i class="fas fa-chevron-down faq-icon text-zandrix-primary"></i>
+                    </label>
+                    <div class="faq-content bg-black/20 px-6">
+                        <p class="pb-6 text-gray-400">
+                            Somos especialistas em stacks modernas. Utilizamos principalmente React.js, Next.js e Tailwind CSS para o front-end, garantindo velocidade e SEO. Para back-end e SaaS, utilizamos Node.js e bancos de dados escaláveis.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pergunta 2 -->
+                <div class="bg-zandrix-dark border border-white/10 rounded-lg overflow-hidden">
+                    <input type="checkbox" id="faq2" class="hidden faq-toggle">
+                    <label for="faq2" class="flex justify-between items-center p-6 cursor-pointer hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">Qual o prazo médio de entrega?</span>
+                        <i class="fas fa-chevron-down faq-icon text-zandrix-primary"></i>
+                    </label>
+                    <div class="faq-content bg-black/20 px-6">
+                        <p class="pb-6 text-gray-400">
+                            Depende da complexidade. Landing Pages de alta conversão podem ser entregues em 5 a 7 dias úteis. Sites institucionais levam cerca de 15 a 20 dias. Projetos de SaaS demandam um cronograma personalizado após análise técnica.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pergunta 3 -->
+                <div class="bg-zandrix-dark border border-white/10 rounded-lg overflow-hidden">
+                    <input type="checkbox" id="faq3" class="hidden faq-toggle">
+                    <label for="faq3" class="flex justify-between items-center p-6 cursor-pointer hover:bg-white/5 transition-colors">
+                        <span class="font-bold text-lg">Vocês oferecem manutenção?</span>
+                        <i class="fas fa-chevron-down faq-icon text-zandrix-primary"></i>
+                    </label>
+                    <div class="faq-content bg-black/20 px-6">
+                        <p class="pb-6 text-gray-400">
+                            Sim. Oferecemos pacotes de suporte e manutenção contínua para garantir que seu site ou sistema permaneça seguro, atualizado e performando bem.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- RODAPÉ -->
-    <footer>
-        <p class="footer-dots">...</p>
-        <p class="copyright">© Zandrix — Especialistas em Sites e SaaS para empresas que querem crescer.</p>
+    <!-- Seção 7: Rodapé -->
+    <footer class="bg-black border-t border-white/10 pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div class="mb-8 md:mb-0 text-center md:text-left">
+                    <a href="#" class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="https://i.imgur.com/w28Wu0f.png" alt="Zandrix Logo" class="h-8 w-auto">
+                        <span class="text-xl font-bold tracking-widest brand-font text-white">ZANDRIX</span>
+                    </a>
+                    <p class="text-gray-500 max-w-xs">Evoluindo negócios através da tecnologia e do design futurista.</p>
+                </div>
+
+                <div class="text-center">
+                    <h4 class="text-white font-bold mb-4">Vamos conversar?</h4>
+                    <a href="https://wa.me/5533998154570" class="text-3xl font-bold text-white hover:text-zandrix-primary transition-colors block mb-2">
+                        (33) 99815-4570
+                    </a>
+                    <div class="flex justify-center gap-6 mt-6">
+                        <a href="https://instagram.com/eu.richardmkt" target="_blank" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/5533998154570" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-2xl transition-colors"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 text-center">
+                <p class="text-gray-600 text-sm">&copy; 2023 Zandrix. Todos os direitos reservados. Developed by Zandrix Team.</p>
+            </div>
+        </div>
     </footer>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/5533998154570" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
+    <!-- Botão Flutuante do WhatsApp -->
+    <a href="https://wa.me/5533998154570" target="_blank" onclick="alertWhatsApp(event)" class="fixed bottom-6 right-6 z-50 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-neon hover:scale-110 transition-transform duration-300">
+        <i class="fab fa-whatsapp text-3xl"></i>
     </a>
 
+    <!-- Scripts de Animação -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
-        // --- THREE.JS BACKGROUND (Particles & Network) ---
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        // Mobile Menu Logic
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
         
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-        // Particles
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 500; // Reduced for performance with lines
-        const posArray = new Float32Array(particlesCount * 3);
-
-        for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 15; // Spread
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            }
         }
 
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const material = new THREE.PointsMaterial({
-            size: 0.02,
-            color: 0x8A2BE2,
-            transparent: true,
-            opacity: 0.8
-        });
+        mobileBtn.addEventListener('click', toggleMobileMenu);
 
-        const particlesMesh = new THREE.Points(particlesGeometry, material);
-        scene.add(particlesMesh);
-
-        // Lines connecting particles
-        const linesGeometry = new THREE.BufferGeometry();
-        const linesMaterial = new THREE.LineBasicMaterial({
-            color: 0x8A2BE2,
-            transparent: true,
-            opacity: 0.1
-        });
-        const linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
-        scene.add(linesMesh);
-
-
-
-
-
-        // Floating Cubes (Geometric Shapes)
-        const geometryCube = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-        const materialCube = new THREE.MeshBasicMaterial({ color: 0x8A2BE2, wireframe: true, transparent: true, opacity: 0.3 });
-        const cube1 = new THREE.Mesh(geometryCube, materialCube);
-        const cube2 = new THREE.Mesh(geometryCube, materialCube);
-        
-        cube1.position.set(3, 2, -2);
-        cube2.position.set(-3, -1, -2);
-        scene.add(cube1);
-        scene.add(cube2);
-
-        camera.position.z = 5;
-
-        // Mouse interaction
-        let mouseX = 0;
-        let mouseY = 0;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = event.clientX / window.innerWidth - 0.5;
-            mouseY = event.clientY / window.innerHeight - 0.5;
-        });
-
-        // --- THREE.JS HERO LOGO (3D Rotating) ---
-        const logoScene = new THREE.Scene();
-        const logoCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-        const logoRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        const logoContainer = document.getElementById('hero-logo-container');
-        
-        logoRenderer.setSize(300, 300);
-        logoContainer.appendChild(logoRenderer.domElement);
-
-        // Create a Cube with the logo texture
-        const textureLoader = new THREE.TextureLoader();
-        // Note: Using a placeholder texture if Imgur blocks CORS or fails. 
-        // In production, host the image locally.
-        const logoTexture = textureLoader.load('https://i.imgur.com/w28Wu0f.png', 
-            undefined, 
-            undefined, 
-            (err) => console.log("Texture error, using wireframe fallback")
-        );
-
-        const logoGeo = new THREE.BoxGeometry(2.5, 2.5, 2.5);
-        const logoMat = new THREE.MeshStandardMaterial({ 
-            map: logoTexture,
-            color: 0xffffff,
-            metalness: 0.7,
-            roughness: 0.2,
-        });
-        
-        // Fallback material if texture fails (Purple Wireframe)
-        const logoMatFallback = new THREE.MeshBasicMaterial({ color: 0x8A2BE2, wireframe: true });
-
-        const logoMesh = new THREE.Mesh(logoGeo, logoMat);
-        logoScene.add(logoMesh);
-
-        // Lights for Logo
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        logoScene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x8A2BE2, 2);
-        pointLight.position.set(5, 5, 5);
-        logoScene.add(pointLight);
-
-        logoCamera.position.z = 4.5;
-
-        // --- ANIMATION LOOP ---
-        const animate = () => {
-            requestAnimationFrame(animate);
-
-            // Background Animation
-            particlesMesh.rotation.y += 0.001;
-            particlesMesh.rotation.x += 0.0005;
-            
-            // Parallax effect
-            particlesMesh.rotation.x += mouseY * 0.01;
-            particlesMesh.rotation.y += mouseX * 0.01;
-
-            cube1.rotation.x += 0.01;
-
-            // Animate connecting lines
-            const positions = particlesMesh.geometry.attributes.position.array;
-            const linesPositions = [];
-            const particleCount = particlesMesh.geometry.attributes.position.count;
-            const connectDistance = 1.5;
-
-            for (let i = 0; i < particleCount; i++) {
-                for (let j = i + 1; j < particleCount; j++) {
-                    const dx = positions[i * 3] - positions[j * 3];
-                    const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-                    const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
-                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                    if (distance < connectDistance) {
-                        linesPositions.push(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
-                        linesPositions.push(positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]);
-                    }
-                }
-            }
-            linesMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linesPositions, 3));
-
-            cube1.rotation.y += 0.01;
-            cube2.rotation.x -= 0.01;
-            cube2.rotation.y -= 0.01;
-
-            renderer.render(scene, camera);
-
-            // Logo Animation
-            // Default rotation
-            logoMesh.rotation.y += 0.005;
-            // Interactive rotation based on mouse position
-            logoMesh.rotation.y += (mouseX * 2 - logoMesh.rotation.y) * 0.05;
-            logoMesh.rotation.x += (-mouseY * 2 - logoMesh.rotation.x) * 0.05;
-            logoRenderer.render(logoScene, logoCamera);
-        };
-
-        animate();
-
-        // --- PRELOADER & SOUND ---
+        // Preloader Logic
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            preloader.classList.add('hidden');
-
-            // Try to play sound after a small delay
-            const ambientSound = document.getElementById('ambient-sound');
-            ambientSound.volume = 0.1; // Keep it subtle
-            
-            const playPromise = ambientSound.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    // Autoplay was prevented. We'll play on the first user interaction.
-                    console.log("Autoplay prevented. Waiting for user interaction.");
-                    document.body.addEventListener('click', () => ambientSound.play(), { once: true });
-                    document.body.addEventListener('scroll', () => ambientSound.play(), { once: true });
-                });
-            }
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500);
         });
 
-        // --- TYPEWRITER EFFECT ---
-        const typewriterElement = document.getElementById('typewriter');
-        const text = "Design futurista. SaaS & Web Apps. Autoridade absoluta.";
-        let i = 0;
-        function typeWriter() {
-            if (i < text.length) {
-                typewriterElement.innerHTML = text.substring(0, i + 1) + '<span class="cursor"></span>';
-                i++;
-                setTimeout(typeWriter, 70);
-            } else {
-                // Blinking cursor at the end
-                typewriterElement.innerHTML = text + '<span class="cursor"></span>';
+        // Typed.js (Efeito de Digitação)
+        new Typed('#typed-text', {
+            strings: ['Ecossistemas Digitais', 'SaaS de Alta Performance', 'Sites que Convertem', 'Autoridade Digital'],
+            typeSpeed: 50,
+            backSpeed: 30,
+            backDelay: 2000,
+            loop: true
+        });
+
+        // Initialize Swiper (Carrossel de Depoimentos)
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+                delay: 3500,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+            },
+        });
+
+        // Initialize Vanilla Tilt (efeito 3D nos cards)
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.1,
+        });
+
+        // Custom Alert for WhatsApp using SweetAlert2
+        function alertWhatsApp(e) {
+            // Optional: prevent default if you want to show alert first, 
+            // but usually direct link is better. 
+            // Here is just an example of integrating the library:
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Iniciando conversa no WhatsApp...'
+            })
+        }
+
+        // Form to WhatsApp Logic
+        function sendToWhatsapp(e) {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            const service = document.getElementById('contact-service').value;
+            const message = document.getElementById('contact-message').value;
+            
+            const text = `Olá Zandrix! Me chamo *${name}*.%0ATenho interesse em: *${service}*.%0A%0AMensagem: ${message}`;
+            
+            window.open(`https://wa.me/5533998154570?text=${text}`, '_blank');
+        }
+
+        // Inicializa animações de scroll
+        AOS.init({
+            once: true, // anima apenas uma vez ao descer
+            offset: 100, // offset (em px) do ponto de disparo original
+            duration: 800, // duração da animação
+            easing: 'ease-out-cubic', // função de easing
+        });
+
+        // Adiciona animação personalizada de flutuação no CSS
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float {
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-20px); }
+                100% { transform: translateY(0px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // --- Canvas Particle System (Efeito Constelação) ---
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
             }
         }
-        // Start after a delay
-        setTimeout(typeWriter, 1000);
 
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * 0.4) - 0.2;
+                let directionY = (Math.random() * 0.4) - 0.2;
+                let color = '#7c3aed';
 
-        // --- FAQ ACCORDION ---
-        const faqItems = document.querySelectorAll('.faq-item');
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
 
-        faqItems.forEach(item => {
-            const question = item.querySelector('.faq-question');
-            question.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                // Optional: close all others
-                // faqItems.forEach(otherItem => otherItem.classList.remove('active'));
-                if (!isActive) {
-                    item.classList.add('active');
-                } else { item.classList.remove('active'); }
-            });
-        });
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
 
-        // --- SCROLL ANIMATIONS (Intersection Observer) ---
-        const observerOptions = {
-            threshold: 0.1
-        };
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-
-                    // Staggered animation for children
-                    const children = entry.target.querySelectorAll('.card, .stat-box, .mascot-image, .ceo-image');
-                    children.forEach((child, index) => {
-                        child.style.transitionDelay = `${index * 150}ms`;
-                    });
-                    
-                    // Trigger number counters if it's the results section
-                    if(entry.target.id === 'results') {
-                        animateValue("count1", 0, 150, 2000);
-                        animateValue("count2", 0, 148, 2000);
-                        animateValue("count3", 0, 5, 2000);
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = 'rgba(124, 58, 237,' + opacityValue + ')';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
                     }
                 }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Number Counter Logic
-        function animateValue(id, start, end, duration) {
-            const obj = document.getElementById(id);
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (end - start) + start) + "+";
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
+            }
         }
 
-        // Window Resize Handling
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            initParticles();
         });
 
+        initParticles();
+        animateParticles();
     </script>
 </body>
 </html>
